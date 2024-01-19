@@ -128,16 +128,26 @@ void UMultiplayerSessionSubsystem::OnCreateSessionComplete(FName SessionName, bo
 {
 	M_ServerCreateDelegate.Broadcast(bWasSuccessful);
 
+	GEngine->AddOnScreenDebugMessage(-1,2,FColor::Orange, TEXT("Create Server Success"));
+
 	if (bWasSuccessful == true)
 	{
-		FString DefaultPath = "/Game/Stylized_Egypt/Maps/Stylized_Egypt_Demo?listen";
+		FString DefaultPath = "/Game/ThirdPerson/Maps/ThirdPersonMap?listen";
 		
 
 		if (!M_MapString.IsEmpty())
 		{
 			DefaultPath =  FString::Printf(TEXT("%s?listen"), *M_MapString);
 		}
-		GetWorld()->ServerTravel(DefaultPath);
+		if (GetWorld()->ServerTravel(DefaultPath))
+		{
+			GEngine->AddOnScreenDebugMessage(-1,2,FColor::Orange, TEXT("Server Travel Success"));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1,2,FColor::Orange, TEXT("Server Travel Failed"));
+		}
+		
 		
 	}
 	else
