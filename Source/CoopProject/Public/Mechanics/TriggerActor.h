@@ -18,6 +18,6 @@ public:
 	ATriggerActor();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Weight"))
-	int32 M_Weight;
+	int M_Weight;
 	
 };

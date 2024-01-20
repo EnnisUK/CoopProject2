@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "WeightedMovableActor.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "WeightPlate.generated.h"
 
@@ -18,8 +19,8 @@ class COOPPROJECT_API AWeightPlate : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "Mesh"))
 	UStaticMeshComponent* M_Mesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "TriggerShape"))
-	UStaticMeshComponent* M_TriggerShape;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "TriggerBox"))
+	UBoxComponent* M_TriggerBox;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -29,11 +30,10 @@ public:
 	AWeightedMovableActor* M_ActorToTrigger;
 
 	
-
+	bool bTrigger = false;
 	
 
-	UPROPERTY(EditAnywhere, meta = (DisplayName ="CurrentWeight"))
-	int M_CurrentWeight
+	
 ;
 
 protected:
@@ -43,6 +43,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void OnEndOverlap(UPrimitiveComponent* OtherComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
 	void WeightTrigger_Implementation();
