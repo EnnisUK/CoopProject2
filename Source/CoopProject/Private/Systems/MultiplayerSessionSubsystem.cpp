@@ -74,7 +74,7 @@ void UMultiplayerSessionSubsystem::FindServer(const FString& ServerName)
 		bIsLan = true;
 	}
 	M_SessionSearch->bIsLanQuery = bIsLan;
-	M_SessionSearch->MaxSearchResults = 9999;
+	M_SessionSearch->MaxSearchResults = 50;
 	M_SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 
 	PrintString("Looking For Session", FColor::Cyan);

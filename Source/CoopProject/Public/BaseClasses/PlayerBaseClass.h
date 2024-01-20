@@ -134,7 +134,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite ,meta = (AllowPrivateAccess = "true" ,DisplayName = "PhysicsHandleComp"))
 	UPhysicsHandleComponent* M_PhysicsHandleComp;
 
-	class ATriggerActor2* M_TriggerActor;
+	class ATriggerActor* M_TriggerActor;
 	
 
 public:	

@@ -15,7 +15,7 @@
 #include "Systems/MainGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Mechanics/MovableActor.h"
-#include "Mechanics/TriggerActor2.h"
+#include "Mechanics/TriggerActor.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -192,9 +192,9 @@ void APlayerBaseClass::GrabObject()
 
 	if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true,ActorsToIgnore, EDrawDebugTrace::ForDuration, Hit, true ))
 	{
-		if (Hit.GetActor()->GetClass()->IsChildOf(ATriggerActor2::StaticClass()))
+		if (Hit.GetActor()->GetClass()->IsChildOf(ATriggerActor::StaticClass()))
 		{
-			M_TriggerActor = Cast<ATriggerActor2>(Hit.GetActor());
+			M_TriggerActor = Cast<ATriggerActor>(Hit.GetActor());
 				if (M_TriggerActor == nullptr) return;
 
 			
@@ -215,7 +215,7 @@ void APlayerBaseClass::DropObject()
 
 void APlayerBaseClass::ObjectMove()
 {
-	FVector TargetLocation = GetCameraComponent()->GetComponentLocation() + GetCameraComponent()->GetForwardVector() * M_HoldDistance;
+	FVector TargetLocation = GetActorLocation() + FVector(0, 0, 100) + GetCameraComponent()->GetForwardVector() * M_HoldDistance;
 	M_PhysicsHandleComp->SetTargetLocationAndRotation(TargetLocation, GetOwner()->GetActorRotation());	
 }
 
@@ -257,12 +257,12 @@ void APlayerBaseClass::ServerRPC_GrabObject_Implementation()
 
 	if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true,ActorsToIgnore, EDrawDebugTrace::ForDuration, Hit, true ))
 	{
-		if (Hit.GetActor()->GetClass()->IsChildOf(ATriggerActor2::StaticClass()))
+		if (Hit.GetActor()->GetClass()->IsChildOf(ATriggerActor::StaticClass()))
 		{
 			
 				if (HasAuthority())
 				{
-					 M_TriggerActor = Cast<ATriggerActor2>(Hit.GetActor());
+					 M_TriggerActor = Cast<ATriggerActor>(Hit.GetActor());
 					if (M_TriggerActor == nullptr) return;
 					
 					Print(UKismetSystemLibrary::GetDisplayName(M_PhysicsHandleComp->GetGrabbedComponent()));

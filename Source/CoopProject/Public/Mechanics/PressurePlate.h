@@ -47,6 +47,9 @@ public:
 	UPROPERTY(BlueprintAssignable, meta = (DisplayName = "OnDeactivated"))
 	FPressurePlateOnDeactivated M_OnDeactivated;
 
+	UPROPERTY(VisibleAnywhere, meta = (DisplayName ="Weight"))
+	int M_Weight;
+
 
 	//Functions
 
