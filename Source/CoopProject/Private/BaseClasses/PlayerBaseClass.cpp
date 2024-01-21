@@ -209,6 +209,7 @@ void APlayerBaseClass::GrabObject()
 
 void APlayerBaseClass::DropObject()
 {
+		
 		M_PhysicsHandleComp->ReleaseComponent();
 		M_bIsGrabbed = false;
 }
@@ -241,7 +242,7 @@ void APlayerBaseClass::ServerRPC_ObjectMove_Implementation()
 {
 	if (HasAuthority())
 	{
-		FVector TargetLocation = GetCameraComponent()->GetComponentLocation() + GetCameraComponent()->GetForwardVector() * M_HoldDistance;
+		FVector TargetLocation = GetActorLocation() + FVector(0, 0, 100) + GetCameraComponent()->GetForwardVector() * M_HoldDistance;
 		M_PhysicsHandleComp->SetTargetLocationAndRotation(TargetLocation, GetOwner()->GetActorRotation());
 	}
 

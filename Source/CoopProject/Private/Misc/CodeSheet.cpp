@@ -10,28 +10,11 @@
 void ACodeSheet::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
-	FTimerHandle Timer;
-
-	if (HasAuthority())
-	{
-		GetWorldTimerManager().SetTimer(Timer, this, &ACodeSheet::NetMulticast_ChangeColour, 3);
-	}
-	
 	
 }
 
-void ACodeSheet::ChangeColour()
-{
-	M_Instace2 = M_Instace3;
-	
-}
 
-void ACodeSheet::NetMulticast_ChangeColour_Implementation()
-{
-	GetStaticMeshComponent()->SetMaterial(0, M_Instace2);
-}
+
 
 void ACodeSheet::OnRep_ChangeInstance()
 {
@@ -42,8 +25,7 @@ void ACodeSheet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ACodeSheet, M_Instace1);
-	DOREPLIFETIME(ACodeSheet, M_Instace2);
-	DOREPLIFETIME(ACodeSheet, M_Instace3);
+	DOREPLIFETIME(ACodeSheet, M_ParentMaterial);
+	
 	
 }

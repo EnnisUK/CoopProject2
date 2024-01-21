@@ -3,6 +3,8 @@
 
 #include "Mechanics/Lantern.h"
 
+#include <string>
+
 #include "BaseClasses/PlayerBaseClass.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -47,8 +49,9 @@ ALantern::ALantern()
 
 	M_Fire->SetVisibility(true);
 	M_PointLight->SetVisibility(true);
-	
 
+	M_Timer = 5;
+	
 }
 
 // Called when the game starts or when spawned
@@ -103,9 +106,24 @@ void ALantern::LightLamp()
 	}
 }
 
+void ALantern::ResetLampsLights()
+{
+	
+	
+	if (M_Timer <= 0)
+	{
+		M_Fire->SetVisibility(true);
+		M_PointLight->SetVisibility(true);
+		M_bIsLit = false;
+	}
+	else
+	{
+		M_Timer -= 1;
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &ALantern::ResetLampsLights, 1.0, false);
+	}
 
-
-
+}
 
 
 void ALantern::ServerRPC_LightLamp_Implementation()

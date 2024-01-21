@@ -3,9 +3,11 @@
 
 #include "Mechanics/CodeMovableObject.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetArrayLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Mechanics/Lantern.h"
 #include "Net/UnrealNetwork.h"
 
 void ACodeMovableObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -35,4 +37,33 @@ void ACodeMovableObject::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ACodeMovableObject::OnRep_ChangeColour()
+{
+	
+}
+
+void ACodeMovableObject::OnRep_UpdateInputCode()
+{
+}
+
+void ACodeMovableObject::ResetLamps_Implementation()
+{
+	TArray<AActor*> OutActors;
+	 UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALantern::StaticClass(), OutActors);
+
+	for (AActor* Actor : OutActors)
+	{
+		ALantern* Lantern = Cast<ALantern>(Actor);
+		if (Lantern)
+		{
+			Lantern->ResetLampsLights();
+		}
+		
+		
+	
+	}
+	M_InputCode = "";
+	M_ResetPuzzle.Broadcast();
 }

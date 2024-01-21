@@ -57,6 +57,11 @@ public:
 
 	void OnRep_IsLit();
 
+
+	UFUNCTION(BlueprintCallable)
+	void ResetLampsLights();
+
+	float M_Timer = 5;
 	
 
 };

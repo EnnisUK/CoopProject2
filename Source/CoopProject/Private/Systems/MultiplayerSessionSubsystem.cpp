@@ -80,6 +80,8 @@ void UMultiplayerSessionSubsystem::FindServer(const FString& ServerName)
 	PrintString("Looking For Session", FColor::Cyan);
 	
 	M_ServerNameToFind = ServerName;
+	FString Msg = FString::Printf(TEXT("Server Name Is: %s"), *ServerName);
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Emerald, Msg);
 	M_SessionPtr->FindSessions(0, M_SessionSearch.ToSharedRef());
 }
 
@@ -119,6 +121,8 @@ void UMultiplayerSessionSubsystem::CreateServer(const FString& ServerName)
 	}
 	SessionSetting.bIsLANMatch = bIsLan;
 	SessionSetting.Set(FName("SERVER_NAME"), ServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	FString Msg = FString::Printf(TEXT("Server Name Is: %s"), *ServerName);
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Emerald, Msg);
 	M_SessionPtr->CreateSession(0, M_SessionName, SessionSetting);
 	
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
+#include "Mechanics/CodeMovableObject.h"
 #include "CodeSheet.generated.h"
 
 
@@ -20,21 +21,13 @@ public:
 
 	virtual void BeginPlay() override;
 	
-	void ChangeColour();
-
-	//Server Functions
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_ChangeColour();
 	
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
-	UMaterialInstance* M_Instace1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_ChangeInstance)
+	UMaterial* M_ParentMaterial;
 
-	UPROPERTY(ReplicatedUsing=OnRep_ChangeInstance, EditAnywhere, BlueprintReadOnly)
-	UMaterialInstance* M_Instace2;
-
-	UPROPERTY(ReplicatedUsing=OnRep_ChangeInstance, EditAnywhere, BlueprintReadOnly)
-	UMaterialInstance* M_Instace3;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ACodeMovableObject* M_TA;
 
 	UFUNCTION()
 	void OnRep_ChangeInstance();
