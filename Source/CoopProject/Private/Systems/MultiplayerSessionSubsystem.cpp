@@ -137,7 +137,7 @@ void UMultiplayerSessionSubsystem::OnCreateSessionComplete(FName SessionName, bo
 
 	if (bWasSuccessful == true)
 	{
-		FString DefaultPath = "/Game/ThirdPerson/Maps/ThirdPersonMap?listen";
+		FString DefaultPath = "/Game/Level/Lobby?listen";
 		
 
 		if (!M_MapString.IsEmpty())
