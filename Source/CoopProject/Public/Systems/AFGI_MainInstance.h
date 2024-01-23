@@ -74,4 +74,5 @@ public:
 	UFUNCTION(BlueprintPure)
 	APlayerController* GetLocalController(APlayerController* LocalController);
 	
+	
 };
