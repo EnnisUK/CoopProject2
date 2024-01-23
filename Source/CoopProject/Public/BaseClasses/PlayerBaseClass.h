@@ -56,13 +56,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Pause Action"))
 	class UInputAction* M_PauseAction;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Ping Action"))
+	class UInputAction* M_PingAction;
+	
 	
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//Input Functions
+	//Functions
 
 	void Move(const FInputActionValue& Value);
 
@@ -73,6 +76,21 @@ protected:
 	void Grab();
 
 	void Print(FString Text);
+	
+	
+	void GrabObject();
+    
+    	
+	void DropObject();
+    
+    	
+	void ObjectMove();
+    
+    	
+	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
+
+	void Ping();
+	
 	
 	//Server Functions
 
@@ -88,24 +106,15 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DropObject();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Unreliable)
 	void ServerRPC_ObjectMove();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
-	
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_Ping();
 	    
-    	void GrabObject();
-    
-    	
-    	void DropObject();
-    
-    	
-    	void ObjectMove();
-    
-    	
-    	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
-	
 
 	
 
@@ -126,6 +135,12 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float M_HoldDistance = 200;
+
+	UPROPERTY(EditAnywhere)
+	float M_PingDistance = 500;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> M_PingActor;
 	
 
 	UPROPERTY(EditAnywhere)
@@ -135,6 +150,11 @@ protected:
 	UPhysicsHandleComponent* M_PhysicsHandleComp;
 
 	class ATriggerActor* M_TriggerActor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "PingOwner"))
+	AActor* M_PingOwner;
+
+	FActorSpawnParameters M_Params;
 	
 
 public:	

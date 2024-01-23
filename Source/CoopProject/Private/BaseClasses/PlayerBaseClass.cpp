@@ -190,7 +190,7 @@ void APlayerBaseClass::GrabObject()
 	FVector End = Start + GetCameraComponent()->GetForwardVector() * M_GrabDistance;
 	FHitResult Hit;
 
-	if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true,ActorsToIgnore, EDrawDebugTrace::ForDuration, Hit, true ))
+	if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true,ActorsToIgnore, EDrawDebugTrace::None, Hit, true ))
 	{
 		if (Hit.GetActor()->GetClass()->IsChildOf(ATriggerActor::StaticClass()))
 		{
@@ -204,7 +204,7 @@ void APlayerBaseClass::GrabObject()
 		}
 		
 	}
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 4, 0, 3);
+	
 }
 
 void APlayerBaseClass::DropObject()
@@ -223,6 +223,68 @@ void APlayerBaseClass::ObjectMove()
 void APlayerBaseClass::PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation)
 {
 	M_PhysicsHandleComp->GrabComponentAtLocationWithRotation(HitComponent, NAME_None, Location, Rotation);
+}
+
+void APlayerBaseClass::Ping()
+{
+	
+	
+	if (HasAuthority())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Called Ping: Is Server"));
+		FHitResult Hit;
+		FVector Start = GetActorLocation();
+		FVector End = GetActorLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+		if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
+		{
+			M_Params.Owner = this;
+			M_PingOwner = M_Params.Owner;
+			GetWorld()->SpawnActor<AActor>(M_PingActor, Hit.Location, FRotator::ZeroRotator, M_Params);
+			
+		}
+		else
+		{
+			M_Params.Owner = this;
+			M_PingOwner = M_Params.Owner;
+			GetWorld()->SpawnActor<AActor>(M_PingActor, End, FRotator::ZeroRotator, M_Params);
+		}
+		
+
+
+		
+		
+
+		
+	
+
+		DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Called Ping: Is Client"));
+		M_Params.Owner = this;
+		M_PingOwner = M_Params.Owner;
+		ServerRPC_Ping();
+	}
+}
+
+void APlayerBaseClass::ServerRPC_Ping_Implementation()
+{
+	FHitResult Hit;
+	FVector Start = GetActorLocation();
+	FVector End = GetActorLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
+	{
+		GetWorld()->SpawnActor<AActor>(M_PingActor, Hit.Location, FRotator::ZeroRotator, M_Params);
+	}
+	else
+	{
+		GetWorld()->SpawnActor<AActor>(M_PingActor, End, FRotator::ZeroRotator, M_Params);
+	}
+	
+
+	DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
+	
 }
 
 void APlayerBaseClass::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -256,7 +318,7 @@ void APlayerBaseClass::ServerRPC_GrabObject_Implementation()
 	FVector End = Start + GetCameraComponent()->GetForwardVector() * M_GrabDistance;
 	FHitResult Hit;
 
-	if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true,ActorsToIgnore, EDrawDebugTrace::ForDuration, Hit, true ))
+	if (UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true,ActorsToIgnore, EDrawDebugTrace::None, Hit, true ))
 	{
 		if (Hit.GetActor()->GetClass()->IsChildOf(ATriggerActor::StaticClass()))
 		{
@@ -275,7 +337,6 @@ void APlayerBaseClass::ServerRPC_GrabObject_Implementation()
 		}
 		
 	}
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 4, 0, 3);
 	
 }
 
@@ -325,6 +386,7 @@ void APlayerBaseClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(M_JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(M_SprintAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Sprint);
 	EnhancedInputComponent->BindAction(M_GrabAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Grab);
+	EnhancedInputComponent->BindAction(M_PingAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Ping);
   
 
 }
