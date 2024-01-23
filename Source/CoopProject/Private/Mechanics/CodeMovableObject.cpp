@@ -58,7 +58,7 @@ void ACodeMovableObject::ResetLamps_Implementation()
 		ALantern* Lantern = Cast<ALantern>(Actor);
 		if (Lantern)
 		{
-			Lantern->ResetLampsLights();
+			Lantern->ResetLampsLightsTimer();
 		}
 		
 		

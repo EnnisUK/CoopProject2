@@ -59,9 +59,11 @@ public:
 
 
 	UFUNCTION(BlueprintCallable)
-	void ResetLampsLights();
+	void ResetLampsLightsTimer();
 
-	float M_Timer = 5;
+	void ResetLamp();
+
+
 	
 
 };

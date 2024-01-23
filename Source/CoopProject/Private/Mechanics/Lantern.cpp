@@ -49,8 +49,6 @@ ALantern::ALantern()
 
 	M_Fire->SetVisibility(true);
 	M_PointLight->SetVisibility(true);
-
-	M_Timer = 5;
 	
 }
 
@@ -106,23 +104,18 @@ void ALantern::LightLamp()
 	}
 }
 
-void ALantern::ResetLampsLights()
+void ALantern::ResetLampsLightsTimer()
 {
-	
-	
-	if (M_Timer <= 0)
-	{
-		M_Fire->SetVisibility(true);
-		M_PointLight->SetVisibility(true);
-		M_bIsLit = false;
-	}
-	else
-	{
-		M_Timer -= 1;
 		FTimerHandle TimerHandle;
-		GetWorldTimerManager().SetTimer(TimerHandle, this, &ALantern::ResetLampsLights, 1.0, false);
-	}
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &ALantern::ResetLamp, 5, false);
+}
 
+void ALantern::ResetLamp()
+{
+	M_Fire->SetVisibility(true);
+	M_PointLight->SetVisibility(true);
+	M_bIsLit = false;
+	
 }
 
 

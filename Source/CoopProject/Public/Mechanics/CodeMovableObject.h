@@ -73,7 +73,7 @@ public:
 	UFUNCTION()
 	void OnRep_UpdateInputCode();
 
-	UFUNCTION(Server, Reliable, BlueprintCallable)
+	UFUNCTION(Client, Reliable, BlueprintCallable)
 	void ResetLamps();
 };
 
