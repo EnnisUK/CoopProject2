@@ -14,6 +14,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Systems/MainGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Mechanics/MovableActor.h"
 #include "Mechanics/TriggerActor.h"
 #include "Net/UnrealNetwork.h"
@@ -234,7 +235,7 @@ void APlayerBaseClass::Ping()
 		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Called Ping: Is Server"));
 		FHitResult Hit;
 		FVector Start = GetActorLocation();
-		FVector End = GetActorLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+		FVector End = GetCameraComponent()->GetComponentLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
 		if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 		{
 			M_Params.Owner = this;
@@ -248,13 +249,6 @@ void APlayerBaseClass::Ping()
 			M_PingOwner = M_Params.Owner;
 			GetWorld()->SpawnActor<AActor>(M_PingActor, End, FRotator::ZeroRotator, M_Params);
 		}
-		
-
-
-		
-		
-
-		
 	
 
 		DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
@@ -272,7 +266,7 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 {
 	FHitResult Hit;
 	FVector Start = GetActorLocation();
-	FVector End = GetActorLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+	FVector End = GetCameraComponent()->GetComponentLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 	{
 		GetWorld()->SpawnActor<AActor>(M_PingActor, Hit.Location, FRotator::ZeroRotator, M_Params);
@@ -368,6 +362,16 @@ void APlayerBaseClass::Tick(float DeltaTime)
 			ObjectMove();
 		}
 		
+		
+	}
+
+	if (bIsSprinting)
+	{
+		if (GetVelocity().Length() <= 10)
+		{
+			Sprint();
+			
+		}
 		
 	}
 
