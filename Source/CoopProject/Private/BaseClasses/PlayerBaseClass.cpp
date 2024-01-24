@@ -262,6 +262,11 @@ void APlayerBaseClass::Ping()
 	}
 }
 
+void APlayerBaseClass::Crouch()
+{
+	
+}
+
 void APlayerBaseClass::ServerRPC_Ping_Implementation()
 {
 	FHitResult Hit;
@@ -280,6 +285,7 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 	DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
 	
 }
+
 
 void APlayerBaseClass::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -391,7 +397,6 @@ void APlayerBaseClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(M_SprintAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Sprint);
 	EnhancedInputComponent->BindAction(M_GrabAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Grab);
 	EnhancedInputComponent->BindAction(M_PingAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Ping);
-  
 
 }
 

@@ -57,6 +57,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Ping Action"))
 	class UInputAction* M_PingAction;
 	
+
+	
 	
 
 protected:
@@ -88,6 +90,8 @@ protected:
 	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
 
 	void Ping();
+
+	void Crouch();
 	
 	
 	//Server Functions
@@ -112,6 +116,7 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Ping();
+	
 	    
 
 	
@@ -153,6 +158,7 @@ protected:
 	AActor* M_PingOwner;
 
 	FActorSpawnParameters M_Params;
+
 	
 
 public:	
