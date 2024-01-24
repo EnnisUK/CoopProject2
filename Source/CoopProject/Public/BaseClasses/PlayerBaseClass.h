@@ -17,9 +17,7 @@ UCLASS()
 class COOPPROJECT_API APlayerBaseClass : public ACharacter
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "SpringArm"))
-	USpringArmComponent* M_SpringArm;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "Camera"))
 	UCameraComponent* M_Camera;
@@ -166,6 +164,5 @@ public:
 	
 
 	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return M_Camera; }
-	FORCEINLINE class USpringArmComponent* GetSpringArmComponent() const { return M_SpringArm; }
 
 };

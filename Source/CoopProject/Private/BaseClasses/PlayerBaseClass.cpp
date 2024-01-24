@@ -24,14 +24,14 @@ APlayerBaseClass::APlayerBaseClass()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-    M_SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
-    M_SpringArm->SetupAttachment(RootComponent);
+	
 
     M_Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
-    M_Camera->SetupAttachment(M_SpringArm);
-	M_Camera->bUsePawnControlRotation = false;
+    M_Camera->SetupAttachment(GetMesh(), FName(TEXT("Head")));
+	M_Camera->bUsePawnControlRotation = true;
 
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
