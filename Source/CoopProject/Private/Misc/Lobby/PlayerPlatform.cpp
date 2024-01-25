@@ -46,7 +46,7 @@ void APlayerPlatform::SpawnCharacter(APlayerController* PC)
 {
 	M_PC = PC;
 
-	if (M_CurrentCharacter)
+/*	if (M_CurrentCharacter)
 	{
 		M_CurrentCharacter->Destroy();
 	}
@@ -59,12 +59,12 @@ void APlayerPlatform::SpawnCharacter(APlayerController* PC)
 
 		M_CurrentCharacter = ReturnValue;
 
-		HideInvite.Broadcast();
+		
 		
 	
-	}
+	}*/
 	
-	
+	HideInvite.Broadcast();
 	
 
 	

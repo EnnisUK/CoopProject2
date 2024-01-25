@@ -13,10 +13,9 @@ UCLASS()
 class COOPPROJECT_API ACoopGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
+public:
 	ACoopGameMode();
-
-
+	
 
 	
 };
