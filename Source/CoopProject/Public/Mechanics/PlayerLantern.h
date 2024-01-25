@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "Components/PointLightComponent.h"
 #include "GameFramework/Actor.h"
+#include "Components/SphereComponent.h"
 #include "PlayerLantern.generated.h"
+
+class AHiddenSymbols;
 
 UCLASS()
 class COOPPROJECT_API APlayerLantern : public AActor
@@ -21,6 +24,9 @@ class COOPPROJECT_API APlayerLantern : public AActor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "Light"))
 	UPointLightComponent* M_Light;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "SphereHitbox"))
+	USphereComponent* M_SphereComp;
+	
 public:	
 	// Sets default values for this actor's properties
 	APlayerLantern();
@@ -33,4 +39,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Variables
+
+	UFUNCTION()
+	void OnComponentStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
+	UFUNCTION()
+	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
