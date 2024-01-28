@@ -6,7 +6,7 @@
 UMainSaveGame::UMainSaveGame()
 {
 
-//	M_ColourMode = EColorVisionDeficiency::NormalVision;
+	M_ColourMode = EColorVisionDeficiency::NormalVision;
 	
 	M_MasterVolume = 0.5;
 
