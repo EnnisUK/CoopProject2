@@ -40,6 +40,8 @@ void UAFGI_MainInstance::SaveGame()
 		M_SaveGame->M_ColourBlindSens = M_ColourBlindSens;
 		M_SaveGame->M_ColourMode = M_ColourMode;
 		M_SaveGame->M_Gamma = M_Gamma;
+		M_SaveGame->M_FOV = M_FOV;
+		M_SaveGame->M_FPSIndex = M_FPSIndex;
 		if (Player)
 		{
 			M_SaveGame->M_PlayerLocation = M_PlayerLocation;
@@ -57,6 +59,7 @@ void UAFGI_MainInstance::SaveGame()
 
 void UAFGI_MainInstance::LoadGame()
 {
+	APlayerBaseClass* Player = Cast<APlayerBaseClass>(GetFirstLocalPlayerController());
 	
 	if	(UGameplayStatics::DoesSaveGameExist(M_SlotName, 0))
 	{
@@ -79,7 +82,13 @@ void UAFGI_MainInstance::LoadGame()
 	M_ColourBlindSens = M_SaveGame->M_ColourBlindSens;
 	M_ColourMode = M_SaveGame->M_ColourMode;
 	M_Gamma = M_SaveGame->M_Gamma;
-	M_PlayerLocation = M_SaveGame->M_PlayerLocation;
+	M_FOV = M_SaveGame->M_FOV;
+	M_FPSIndex = M_SaveGame->M_FPSIndex;
+	if (Player)
+	{
+		M_PlayerLocation = M_SaveGame->M_PlayerLocation;
+	}
+	
 
 	GEngine->AddOnScreenDebugMessage(-1,2,FColor::Green, TEXT("Loaded Game"));
 
@@ -129,6 +138,11 @@ void UAFGI_MainInstance::SetDefaultSettings()
 	if (M_BrightnessSlider)
 	{
 		M_BrightnessSlider->SetValue(M_Gamma);
+	}
+	
+	if (M_FOVSlider)
+	{
+		M_FOVSlider->SetValue(M_FOV);
 	}
 
 	M_UserSettings->ApplySettings(true);
