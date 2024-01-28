@@ -41,6 +41,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "ColourMode"))
 	EColorVisionDeficiency M_ColourMode;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Field Of View"))
+	float M_FOV;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "FPS Index"))
+	int M_FPSIndex;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Brightness"))
 	float M_Gamma;
 	

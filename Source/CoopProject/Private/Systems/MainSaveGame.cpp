@@ -23,5 +23,9 @@ UMainSaveGame::UMainSaveGame()
 	M_Gamma = 2.2;
 
 	M_PlayerLocation = FVector::Zero();
+
+	M_FOV = 90;
+
+	M_FPSIndex = 0;
 	
 }

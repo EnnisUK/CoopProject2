@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MasterVolume"))
 	float M_MasterVolume;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Field Of View"))
+	float M_FOV;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "SFXVolume"))
 	float M_SFXVolume;
 
@@ -124,6 +127,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Brightness Slider"))
 	USlider* M_BrightnessSlider;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "FOV Slider"))
+	USlider* M_FOVSlider;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "PlayerUserSettings"))
 	UGameUserSettings* M_UserSettings;
