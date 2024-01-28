@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Rendering/RenderingCommon.h"
 #include "MainSaveGame.generated.h"
 
 /**
@@ -37,8 +38,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "ColourBlindSens"))
 	float M_ColourBlindSens;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "ColourMode"))
-	//EColorVisionDeficiency M_ColourMode;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "ColourMode"))
+	EColorVisionDeficiency M_ColourMode;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Brightness"))
 	float M_Gamma;
