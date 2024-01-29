@@ -27,5 +27,7 @@ UMainSaveGame::UMainSaveGame()
 	M_FOV = 90;
 
 	M_FPSIndex = 0;
+
+	M_MouseSens = 1;
 	
 }

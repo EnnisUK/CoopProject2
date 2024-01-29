@@ -41,6 +41,9 @@ public:
 
 	//Settings Variables
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MouseSens"))
+	float M_MouseSens;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MasterVolume"))
 	float M_MasterVolume;
 
@@ -130,6 +133,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "FOV Slider"))
 	USlider* M_FOVSlider;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Mouse Sens Slider"))
+	USlider* M_MouseSensSlider;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "PlayerUserSettings"))
 	UGameUserSettings* M_UserSettings;
