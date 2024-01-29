@@ -52,5 +52,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Player Location"))
 	FVector M_PlayerLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Mouse Sens"))
+	float M_MouseSens;
 	
 };

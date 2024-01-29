@@ -159,6 +159,9 @@ protected:
 
 	FActorSpawnParameters M_Params;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float M_MouseSens = 1.0f;
+
 	
 
 public:	

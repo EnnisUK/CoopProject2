@@ -98,8 +98,8 @@ void APlayerBaseClass::Look(const FInputActionValue& Value)
 
     if (Controller != nullptr)
     {
-        AddControllerYawInput(LookAxisVector.X);
-        AddControllerPitchInput(LookAxisVector.Y);
+        AddControllerYawInput(LookAxisVector.X * M_MouseSens);
+        AddControllerPitchInput(LookAxisVector.Y * M_MouseSens);
     }
 }
 
