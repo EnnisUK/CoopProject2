@@ -29,5 +29,9 @@ UMainSaveGame::UMainSaveGame()
 	M_FPSIndex = 0;
 
 	M_MouseSens = 1;
+
+	M_bUseInvertedMouseY = false;
+
+	M_bUseInvertedMouseX = false;
 	
 }

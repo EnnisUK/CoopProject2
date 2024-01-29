@@ -18,6 +18,7 @@
 #include "Mechanics/MovableActor.h"
 #include "Mechanics/TriggerActor.h"
 #include "Net/UnrealNetwork.h"
+#include "Systems/AFGI_MainInstance.h"
 
 
 // Sets default values
@@ -93,13 +94,39 @@ void APlayerBaseClass::Move(const FInputActionValue& Value)
 
 void APlayerBaseClass::Look(const FInputActionValue& Value)
 {
+	UAFGI_MainInstance* MyGameInstance;
+	MyGameInstance = Cast<UAFGI_MainInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	if (MyGameInstance->M_bUseInvertedMouseY)
+	{
+		M_InvertedAmountY = 1;
+	}
+	else
+	{
+		M_InvertedAmountY = -1;
+	}
+	if (MyGameInstance->M_bUseInvertedMouseX)
+	{
+		M_InvertedAmountX = 1;
+	}
+	else
+	{
+		M_InvertedAmountX = -1;
+	}
+	
     // input is a Vector2D
     const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
     if (Controller != nullptr)
     {
-        AddControllerYawInput(LookAxisVector.X * M_MouseSens);
-        AddControllerPitchInput(LookAxisVector.Y * M_MouseSens);
+    	
+    	float X = LookAxisVector.X * M_MouseSens;
+    	float xAxis = X * M_InvertedAmountX;
+
+    	float Y = LookAxisVector.Y * M_MouseSens;
+    	float yAxis = Y * M_InvertedAmountY;
+        AddControllerYawInput(xAxis);
+        AddControllerPitchInput(yAxis);
     }
 }
 

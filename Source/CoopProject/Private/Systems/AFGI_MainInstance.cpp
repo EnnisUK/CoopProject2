@@ -43,6 +43,8 @@ void UAFGI_MainInstance::SaveGame()
 		M_SaveGame->M_FOV = M_FOV;
 		M_SaveGame->M_FPSIndex = M_FPSIndex;
 		M_SaveGame->M_MouseSens = M_MouseSens;
+		M_SaveGame->M_bUseInvertedMouseY = M_bUseInvertedMouseY;
+		M_SaveGame->M_bUseInvertedMouseX = M_bUseInvertedMouseX;
 		if (Player)
 		{
 			M_SaveGame->M_PlayerLocation = M_PlayerLocation;
@@ -86,6 +88,8 @@ void UAFGI_MainInstance::LoadGame()
 	M_FOV = M_SaveGame->M_FOV;
 	M_FPSIndex = M_SaveGame->M_FPSIndex;
 	M_MouseSens = M_SaveGame->M_MouseSens;
+	M_bUseInvertedMouseY = M_SaveGame->M_bUseInvertedMouseY;
+	M_bUseInvertedMouseX = M_SaveGame->M_bUseInvertedMouseX;
 	if (Player)
 	{
 		M_PlayerLocation = M_SaveGame->M_PlayerLocation;
