@@ -55,5 +55,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Mouse Sens"))
 	float M_MouseSens;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Inverted Y?"))
+	bool M_bUseInvertedMouseY;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Inverted X?"))
+	bool M_bUseInvertedMouseX;
 	
 };

@@ -162,6 +162,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float M_MouseSens = 1.0f;
 
+	float M_InvertedAmountY = -1;
+
+	float M_InvertedAmountX = -1;
+
 	
 
 public:	
