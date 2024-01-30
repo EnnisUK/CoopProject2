@@ -3,10 +3,12 @@
 
 #include "Systems/CharacterController.h"
 
+#include "AdvancedVoiceLibrary.h"
 #include "OnlineSubsystem.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetStringLibrary.h"
 
 void ACharacterController::BeginPlay()
 {
@@ -20,6 +22,14 @@ void ACharacterController::BeginPlay()
 	GetWorldTimerManager().SetTimer(CheckPingTimer, this, &ACharacterController::CheckPing, 20, true);
 
 	CheckPing();
+	
+	
+	
+}
+
+void ACharacterController::PushToTalk(bool TurnOnMic)
+{
+	
 	
 }
 

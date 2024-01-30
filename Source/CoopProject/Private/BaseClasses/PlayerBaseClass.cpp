@@ -59,9 +59,12 @@ void APlayerBaseClass::BeginPlay()
 		{
 			Subsystem->ClearAllMappings();
 			Subsystem->AddMappingContext(M_PlayerMappingContext, 0);
+			
 		}
 		
 	}
+
+	
 
 }
 
@@ -209,6 +212,24 @@ void APlayerBaseClass::Print(FString Text)
 	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Orange, Text);
 }
 
+void APlayerBaseClass::PushToTalk()
+{
+	
+	M_CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	
+
+	if (!M_IsSpeaking && M_CharacterController)
+	{
+		M_IsSpeaking = true;
+		M_CharacterController->PushToTalk(true);
+	}
+	else if (M_IsSpeaking && M_CharacterController)
+	{
+		M_IsSpeaking = false;
+		M_CharacterController->PushToTalk(false);
+	}
+}
+
 
 void APlayerBaseClass::GrabObject()
 {
@@ -259,7 +280,6 @@ void APlayerBaseClass::Ping()
 	
 	if (HasAuthority())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Called Ping: Is Server"));
 		FHitResult Hit;
 		FVector Start = GetActorLocation();
 		FVector End = GetCameraComponent()->GetComponentLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
@@ -282,7 +302,6 @@ void APlayerBaseClass::Ping()
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Called Ping: Is Client"));
 		M_Params.Owner = this;
 		M_PingOwner = M_Params.Owner;
 		ServerRPC_Ping();
@@ -424,6 +443,7 @@ void APlayerBaseClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(M_SprintAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Sprint);
 	EnhancedInputComponent->BindAction(M_GrabAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Grab);
 	EnhancedInputComponent->BindAction(M_PingAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Ping);
+	EnhancedInputComponent->BindAction(M_PushToTalk, ETriggerEvent::Triggered, this, &APlayerBaseClass::PushToTalk);
 
 }
 

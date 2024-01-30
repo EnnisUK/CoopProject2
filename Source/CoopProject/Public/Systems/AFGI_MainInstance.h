@@ -153,6 +153,12 @@ public:
 
 	FString M_ResolutionY;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicDevice"))
+	FString M_SelctedMic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicVolume"))
+	float M_MicVolume;
+
 	UPROPERTY(BlueprintReadOnly)
 	FString M_Message;
 	

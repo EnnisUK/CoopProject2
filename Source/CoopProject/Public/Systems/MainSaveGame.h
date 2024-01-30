@@ -64,5 +64,11 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Resolution"))
 	FIntPoint M_Resolution;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicDevice"))
+	FString M_SelctedMic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicVolume"))
+	float M_MicVolume;
 	
 };

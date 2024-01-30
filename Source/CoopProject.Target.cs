@@ -11,6 +11,6 @@ public class CoopProjectTarget : TargetRules
     		DefaultBuildSettings = BuildSettingsVersion.V3;
     		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_2;
     		ExtraModuleNames.Add("CoopProject");
-    		bUsesSteam = true;
+		    bUsesSteam = true;
 	}
 }

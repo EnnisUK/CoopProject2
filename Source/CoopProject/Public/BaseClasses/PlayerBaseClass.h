@@ -9,6 +9,7 @@
 #include "InputActionValue.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Interfaces/NetworkPredictionInterface.h"
+#include "Systems/CharacterController.h"
 
 
 #include "PlayerBaseClass.generated.h"
@@ -57,6 +58,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Ping Action"))
 	class UInputAction* M_PingAction;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Talk Action"))
+    class UInputAction* M_PushToTalk;
+	
 
 	
 	
@@ -76,7 +80,9 @@ protected:
 	void Grab();
 
 	void Print(FString Text);
-	
+
+
+	void PushToTalk();
 	
 	void GrabObject();
     
@@ -126,6 +132,12 @@ protected:
 	
 	
 	//Variables
+
+	ACharacterController* M_CharacterController;
+
+	bool M_IsSpeaking = false;
+
+	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Sprinting"))
 	bool bIsSprinting;
