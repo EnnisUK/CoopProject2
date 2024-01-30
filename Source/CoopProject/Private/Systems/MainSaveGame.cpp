@@ -34,4 +34,6 @@ UMainSaveGame::UMainSaveGame()
 
 	M_bUseInvertedMouseX = false;
 	
+	M_Resolution = M_Resolution.X = 1920, M_Resolution.Y = 1080;
+	
 }

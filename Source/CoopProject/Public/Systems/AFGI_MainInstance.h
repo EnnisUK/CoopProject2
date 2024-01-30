@@ -148,6 +148,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "FPSWidgetRef"))
 	UUserWidget* M_FPSWidget;
+
+	FString M_ResolutionX;
+
+	FString M_ResolutionY;
+
+	UPROPERTY(BlueprintReadOnly)
+	FString M_Message;
 	
 	
 	
