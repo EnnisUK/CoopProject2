@@ -9,7 +9,7 @@ public class CoopProjectTarget : TargetRules
 	{
 			Type = TargetType.Game;
     		DefaultBuildSettings = BuildSettingsVersion.V3;
-    		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_2;
+		    IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
     		ExtraModuleNames.Add("CoopProject");
 		    bUsesSteam = true;
 	}

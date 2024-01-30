@@ -96,8 +96,7 @@ protected:
 	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
 
 	void Ping();
-
-	void Crouch();
+	
 	
 	
 	//Server Functions

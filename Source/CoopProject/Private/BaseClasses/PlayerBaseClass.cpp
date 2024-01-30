@@ -308,10 +308,7 @@ void APlayerBaseClass::Ping()
 	}
 }
 
-void APlayerBaseClass::Crouch()
-{
-	
-}
+
 
 void APlayerBaseClass::ServerRPC_Ping_Implementation()
 {

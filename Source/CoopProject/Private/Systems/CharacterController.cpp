@@ -3,6 +3,7 @@
 
 #include "Systems/CharacterController.h"
 
+#include "PlayerVoiceChatActor.h"
 #include "AdvancedVoiceLibrary.h"
 #include "OnlineSubsystem.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
@@ -29,6 +30,16 @@ void ACharacterController::BeginPlay()
 
 void ACharacterController::PushToTalk(bool TurnOnMic)
 {
+	if (TurnOnMic)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Mic On, called from CharacterCon"));
+		UUniversalVoiceChat::VoiceChatStartSpeak(true, true, 0, false, 0);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Mic Off, called from CharacterCon"));
+		UUniversalVoiceChat::VoiceChatStopSpeak();
+	}
 	
 	
 }
