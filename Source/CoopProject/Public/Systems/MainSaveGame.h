@@ -62,4 +62,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Inverted X?"))
 	bool M_bUseInvertedMouseX;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Resolution"))
+	FIntPoint M_Resolution;
+	
 };

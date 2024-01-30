@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetStringLibrary.h"
 
 void UAFGI_MainInstance::Init()
 {
@@ -15,6 +16,8 @@ void UAFGI_MainInstance::Init()
 	LoadGame();
 
 	M_UserSettings = UGameUserSettings::GetGameUserSettings();
+
+	SetDefaultSettings();
 	
 }
 
@@ -45,6 +48,7 @@ void UAFGI_MainInstance::SaveGame()
 		M_SaveGame->M_MouseSens = M_MouseSens;
 		M_SaveGame->M_bUseInvertedMouseY = M_bUseInvertedMouseY;
 		M_SaveGame->M_bUseInvertedMouseX = M_bUseInvertedMouseX;
+		M_SaveGame->M_Resolution = M_Resolution;
 		if (Player)
 		{
 			M_SaveGame->M_PlayerLocation = M_PlayerLocation;
@@ -90,6 +94,7 @@ void UAFGI_MainInstance::LoadGame()
 	M_MouseSens = M_SaveGame->M_MouseSens;
 	M_bUseInvertedMouseY = M_SaveGame->M_bUseInvertedMouseY;
 	M_bUseInvertedMouseX = M_SaveGame->M_bUseInvertedMouseX;
+	M_Resolution = M_SaveGame->M_Resolution;
 	if (Player)
 	{
 		M_PlayerLocation = M_SaveGame->M_PlayerLocation;
@@ -108,13 +113,15 @@ APlayerController* UAFGI_MainInstance::GetLocalController(APlayerController* Loc
 
 void UAFGI_MainInstance::SetDefaultSettings()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("DefaultSettingsCalled"));
+	
+	M_UserSettings->LoadSettings();
+	
 	M_WindowMode = M_UserSettings->GetLastConfirmedFullscreenMode();
 
 	M_FrameRate = M_UserSettings->GetFrameRateLimit();
 
 	M_bUseVsync = M_UserSettings->IsVSyncEnabled();
-
-	M_Resolution = M_UserSettings->GetLastConfirmedScreenResolution();
 
 	M_ShadingIndex = M_UserSettings->GetShadingQuality();
 
@@ -156,10 +163,14 @@ void UAFGI_MainInstance::SetDefaultSettings()
 		M_MouseSensSlider->SetValue(M_MouseSens);
 	}
 
-	M_UserSettings->ApplySettings(true);
-
 	ShowFPS();
 	SetScreenRes();
+	
+	M_UserSettings->ApplySettings(false);
+	M_UserSettings->ApplyResolutionSettings(true);
+	M_UserSettings->ConfirmVideoMode();
+
+	
 	
 }
 
@@ -189,46 +200,36 @@ void UAFGI_MainInstance::SetScreenRes()
 	if (M_Resolution.X == 1280)
 	{
 		M_ResolutionIndex = 0;
-		M_Resolution.X = 1280;
-		M_Resolution.Y = 720;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 1280x720"));
+		
 	}
 	else if (M_Resolution.X == 1600)
 	{
 		M_ResolutionIndex = 1;
-		M_Resolution.X = 1600;
-		M_Resolution.Y = 900;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 1600x900"));
+	
 	}
 	else if (M_Resolution.X == 1920)
 	{
 		M_ResolutionIndex = 2;
-		M_Resolution.X = 1920;
-		M_Resolution.Y = 1080;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 1920x1080"));
+	
 	}
 	else if (M_Resolution.X == 2560)
 	{
 		M_ResolutionIndex = 3;
-		M_Resolution.X = 2560;
-		M_Resolution.Y = 1440;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 2560x1440"));
+	
 	}
 	else if (M_Resolution.X == 3840)
 	{
 		M_ResolutionIndex = 4;
-		M_Resolution.X = 3840;
-		M_Resolution.Y = 2160;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 3840x2160"));
+		
 	}
-
-	M_UserSettings->ApplyResolutionSettings(true);
+	
 	
 }
 
 void UAFGI_MainInstance::ApplySettings()
 {
 	M_UserSettings->SetFullscreenMode(M_WindowMode);
+	M_UserSettings->SetScreenResolution(M_Resolution);
 	M_UserSettings->SetFrameRateLimit(M_FrameRate);
 	M_UserSettings->SetVSyncEnabled(M_bUseVsync);
 	M_UserSettings->SetTextureQuality(M_TextureIndex);
@@ -240,8 +241,22 @@ void UAFGI_MainInstance::ApplySettings()
 	M_UserSettings->SetViewDistanceQuality(M_ViewDistance);
 	M_UserSettings->SetGlobalIlluminationQuality(M_GlobalIlluminationQuality);
 	M_UserSettings->SetVisualEffectQuality(M_EffectsIndex);
+	
 
-	M_UserSettings->ApplySettings(false);
+	M_UserSettings->ApplyNonResolutionSettings();
+	M_UserSettings->SaveSettings();
+
+	if (M_UserSettings->IsScreenResolutionDirty())
+	{
+		M_UserSettings->ApplyResolutionSettings(false);
+		M_UserSettings->ConfirmVideoMode();
+	}
+	if (M_UserSettings->IsFullscreenModeDirty())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Blue, TEXT("Confirm Video Mode"));
+		M_UserSettings->ConfirmVideoMode();
+		M_UserSettings->ApplyResolutionSettings(false);
+	}
 
 	SaveGame();
 }
@@ -253,35 +268,50 @@ void UAFGI_MainInstance::ChangeScreenIndex(int NewIndex)
 	case 0:
 		M_Resolution.X = 1280;
 		M_Resolution.Y = 720;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 1280x720"));
+
+		M_ResolutionX = "1280";
+		M_ResolutionY = "720";
+		
 		break;
 	case 1:
 		M_Resolution.X = 1600;
 		M_Resolution.Y = 900;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 1600x900"));
+		
+		M_ResolutionX = "1600";
+		M_ResolutionY = "900";
 		break;
 	case 2:
 		M_Resolution.X = 1920;
 		M_Resolution.Y = 1080;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 1920x1080"));
+		
+		M_ResolutionX = "1920";
+		M_ResolutionY = "1080";
 		break;
 	case 3:
 		M_Resolution.X = 2560;
 		M_Resolution.Y = 1440;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 2560x1440"));
+		
+		M_ResolutionX = "2560";
+		M_ResolutionY = "1440";
 		break;
 	case 4:
 		M_Resolution.X = 3840;
 		M_Resolution.Y = 2160;
-		UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("r.setres 3840x2160"));
+		
+		M_ResolutionX = "3840";
+		M_ResolutionY = "2160";
+		
 		break;
 		
 
-		default:break;
+	default:
+		M_ResolutionX = "1920";
+		M_ResolutionY = "1080";
+			break;
 	}
 
-	M_UserSettings->ApplyResolutionSettings(true);
-	M_UserSettings->ConfirmVideoMode();
+	FString CommandString = ("r.setres ");
+	M_Message = CommandString + M_ResolutionX + "x" + M_ResolutionY;
 }
 
 void UAFGI_MainInstance::ChangeFPS(int NewIndex)
