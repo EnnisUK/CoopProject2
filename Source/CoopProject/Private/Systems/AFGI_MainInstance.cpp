@@ -49,6 +49,8 @@ void UAFGI_MainInstance::SaveGame()
 		M_SaveGame->M_bUseInvertedMouseY = M_bUseInvertedMouseY;
 		M_SaveGame->M_bUseInvertedMouseX = M_bUseInvertedMouseX;
 		M_SaveGame->M_Resolution = M_Resolution;
+		M_SaveGame->M_SelctedMic = M_SelctedMic;
+		M_SaveGame->M_MicVolume = M_MicVolume;
 		if (Player)
 		{
 			M_SaveGame->M_PlayerLocation = M_PlayerLocation;
@@ -95,6 +97,8 @@ void UAFGI_MainInstance::LoadGame()
 	M_bUseInvertedMouseY = M_SaveGame->M_bUseInvertedMouseY;
 	M_bUseInvertedMouseX = M_SaveGame->M_bUseInvertedMouseX;
 	M_Resolution = M_SaveGame->M_Resolution;
+	M_SelctedMic = M_SaveGame->M_SelctedMic;
+	M_MicVolume = M_SaveGame->M_MicVolume;
 	if (Player)
 	{
 		M_PlayerLocation = M_SaveGame->M_PlayerLocation;

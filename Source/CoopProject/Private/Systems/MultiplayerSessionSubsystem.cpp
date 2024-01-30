@@ -113,6 +113,7 @@ void UMultiplayerSessionSubsystem::CreateServer(const FString& ServerName)
 	SessionSetting.bAllowJoinViaPresence = true;
 	SessionSetting.bAllowJoinInProgress = true;
 	SessionSetting.bAllowInvites = true;
+	SessionSetting.bUseLobbiesVoiceChatIfAvailable = true;
 	
 	bool bIsLan = false;
 	if (IOnlineSubsystem::Get()->GetSubsystemName() == "NULL")

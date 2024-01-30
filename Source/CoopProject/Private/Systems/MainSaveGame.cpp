@@ -35,5 +35,9 @@ UMainSaveGame::UMainSaveGame()
 	M_bUseInvertedMouseX = false;
 	
 	M_Resolution = M_Resolution.X = 1920, M_Resolution.Y = 1080;
+
+	M_SelctedMic = "Elgato Wave in";
+
+	M_MicVolume = 1;
 	
 }
