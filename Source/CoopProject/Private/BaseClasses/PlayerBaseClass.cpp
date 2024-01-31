@@ -123,11 +123,10 @@ void APlayerBaseClass::Look(const FInputActionValue& Value)
     if (Controller != nullptr)
     {
     	
-    	float X = LookAxisVector.X * M_MouseSens;
-    	float xAxis = X * M_InvertedAmountX;
-
-    	float Y = LookAxisVector.Y * M_MouseSens;
-    	float yAxis = Y * M_InvertedAmountY;
+    	
+    	float xAxis = LookAxisVector.X * M_MouseSens * M_InvertedAmountX;
+    	
+    	float yAxis = LookAxisVector.Y * M_MouseSens * M_InvertedAmountY;
         AddControllerYawInput(xAxis);
         AddControllerPitchInput(yAxis);
     }

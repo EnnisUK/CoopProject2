@@ -238,7 +238,7 @@ void UAFGI_MainInstance::ApplySettings()
 	M_UserSettings->SetVSyncEnabled(M_bUseVsync);
 	M_UserSettings->SetTextureQuality(M_TextureIndex);
 	M_UserSettings->SetFoliageQuality(M_FoliageIndex);
-	M_UserSettings->SetShadingQuality(M_ShadowIndex);
+	M_UserSettings->SetShadowQuality(M_ShadowIndex);
 	M_UserSettings->SetShadingQuality(M_ShadingIndex);
 	M_UserSettings->SetPostProcessingQuality(M_PostProcessing);
 	M_UserSettings->SetAntiAliasingQuality(M_AntiAliasing);
