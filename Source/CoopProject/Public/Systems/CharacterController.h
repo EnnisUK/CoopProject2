@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MainPlayerState.h"
+#include "ActorComponents/ChatPC.h"
 #include "GameFramework/PlayerController.h"
 #include "CharacterController.generated.h"
 
@@ -20,10 +21,12 @@ class COOPPROJECT_API ACharacterController : public APlayerController
 
 public:
 
+	ACharacterController();
+
+	
+
 	virtual void BeginPlay() override;
 
-
-public:
 
 	void PushToTalk(bool TurnOnMic);
 	

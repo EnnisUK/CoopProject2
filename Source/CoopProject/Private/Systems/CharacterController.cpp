@@ -11,6 +11,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
 
+ACharacterController::ACharacterController()
+{
+}
+
 void ACharacterController::BeginPlay()
 {
 	Super::BeginPlay();
