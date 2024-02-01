@@ -17,6 +17,7 @@ public:
 	//Variables
 
 	FVector M_StartPoint;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
 	FVector M_EndPoint;
 	
 	bool M_bArePointsSet;

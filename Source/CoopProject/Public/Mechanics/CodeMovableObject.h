@@ -4,10 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
+#include "ActorComponents/TransporterComponent.h"
+#include "Components/ArrowComponent.h"
 #include "CodeMovableObject.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FResetPuzzle);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FActivateActor);
 
 /**
  * 
@@ -25,6 +29,20 @@ public:
 	ACodeMovableObject();
 
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, meta = (DisplayName = "Transporter", AllowPrivateAccess = "true"))
+	UTransporterComponent* M_Transporter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite ,meta = (DisplayName = "Point 1"))
+	UArrowComponent* M_Point1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite ,meta = (DisplayName = "Point 2"))
+	UArrowComponent* M_Point2;
+
+
+
+
+	
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CheckInput();
@@ -65,6 +83,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FResetPuzzle M_ResetPuzzle;
 
+	UPROPERTY(BlueprintAssignable)
+	FActivateActor M_ActivateActor;
+
 	//Server Functions
 
 	UFUNCTION()
@@ -75,5 +96,8 @@ public:
 
 	UFUNCTION(Client, Reliable, BlueprintCallable)
 	void ResetLamps();
+
+	UFUNCTION(BlueprintCallable)
+	void CorrectCode();
 };
 

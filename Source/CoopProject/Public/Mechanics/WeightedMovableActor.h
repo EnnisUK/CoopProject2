@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActorComponents/TransporterComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Systems/GlobalFunctionsInterface.h"
+#include "Components/ArrowComponent.h"
 #include "WeightedMovableActor.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FResetActor);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FActivateActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FActivateWeightedPlate);
 
 /**
  * 
@@ -21,6 +22,9 @@ class COOPPROJECT_API AWeightedMovableActor : public AStaticMeshActor, public IG
 public:
 	AWeightedMovableActor();
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, meta = (DisplayName = "Transporter", AllowPrivateAccess = "true"))
+	UTransporterComponent* M_Transporter;
+	
 	UPROPERTY(EditAnywhere, Category = "Stats",meta = (DisplayName ="WeightNeeded"))
 	int M_WeightNeeded;
 
@@ -28,9 +32,19 @@ public:
 	FResetActor M_ResetActor;
 
 	UPROPERTY(BlueprintAssignable)
-	FActivateActor M_ActivateActor;
+	FActivateWeightedPlate M_ActivateActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,meta = (DisplayName ="CurrentWeight"))
 	int M_CurrentWeight;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite ,meta = (DisplayName = "Point 1"))
+	UArrowComponent* M_Point1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite ,meta = (DisplayName = "Point 2"))
+	UArrowComponent* M_Point2;
+
+protected:
+
+	virtual void BeginPlay() override;
 	
 };

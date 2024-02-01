@@ -2,8 +2,10 @@
 #include "ActorComponents/TransporterComponent.h"
 
 #include "Collectable/CollectableKey.h"
+#include "Mechanics/CodeMovableObject.h"
 #include "Mechanics/LeverActor.h"
 #include "Mechanics/PressurePlate.h"
+#include "Mechanics/WeightPlate.h"
 
 
 UTransporterComponent::UTransporterComponent()
@@ -81,6 +83,15 @@ void UTransporterComponent::BeginPlay()
 		{
 			LeverActor->M_ActivatedLever.AddDynamic(this, &UTransporterComponent::OnTriggerActorActivated);
 		}
+		if (AWeightPlate* WeightedPlate = Cast<AWeightPlate>(TA))
+		{
+			WeightedPlate->M_OnActivated.AddDynamic(this, &UTransporterComponent::OnTriggerActorActivated);
+			WeightedPlate->M_OnDeactivated.AddDynamic(this, &UTransporterComponent::OnTriggerActorDeactivated);
+		}
+		if (ACodeMovableObject* MovableObject = Cast<ACodeMovableObject>(TA))
+		{
+			MovableObject->M_ActivateActor.AddDynamic(this, &UTransporterComponent::OnTriggerActorActivated);
+		}
 		
 	}
 	
@@ -115,5 +126,6 @@ void UTransporterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			Owner->SetActorLocation(NewLocation);
 		}
 	}
+	
 }
 

@@ -6,6 +6,7 @@
 #include "Components/PointLightComponent.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
+#include "Components/ArrowComponent.h"
 #include "PlayerLantern.generated.h"
 
 class AHiddenSymbols;
@@ -26,6 +27,9 @@ class COOPPROJECT_API APlayerLantern : public AActor
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "SphereHitbox"))
 	USphereComponent* M_SphereComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "Arrow"))
+	UArrowComponent* M_Arrow;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -47,4 +51,11 @@ public:
 
 	UFUNCTION()
 	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
+	UFUNCTION(BlueprintCallable)
+	void ClippingTrace();
+
+	UPROPERTY(EditAnywhere)
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 };

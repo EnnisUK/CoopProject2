@@ -6,7 +6,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Mechanics/TriggerActor.h"
 #include "Systems/GlobalFunctionsInterface.h"
 
 // Sets default values
@@ -26,9 +25,13 @@ AWeightPlate::AWeightPlate()
 	M_Mesh->SetupAttachment(RootComponent);
 	M_Mesh->SetIsReplicated(true);
 
-	M_TriggerBox = CreateDefaultSubobject<UBoxComponent>("TriggerBox");
-	M_TriggerBox->SetupAttachment(RootComponent);
-	M_TriggerBox->SetIsReplicated(true);
+	M_Transporter = CreateDefaultSubobject<UTransporterComponent>("Transporter");
+	M_Transporter->SetIsReplicated(true);
+	M_Transporter->M_MoveTime = 0.25f;
+
+	M_TriggerShape = CreateDefaultSubobject<UStaticMeshComponent>("TriggerShape");
+	M_TriggerShape->SetupAttachment(RootComponent);
+	M_TriggerShape->SetIsReplicated(true);
 
 }
 
@@ -37,14 +40,24 @@ void AWeightPlate::BeginPlay()
 {
 	Super::BeginPlay();
 
-	M_TriggerBox->OnComponentEndOverlap.AddDynamic(this, &AWeightPlate::OnEndOverlap);
+	const FVector Point2 = GetActorLocation() + FVector(0,0, -20);
+	M_Transporter->SetPoints(GetActorLocation(), Point2);
+
+	M_TriggerShape->SetVisibility(false);
+	M_TriggerShape->SetCollisionProfileName(FName("OverlapAll"));
 	
+}
+
+void AWeightPlate::Print(FString Message)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Orange, Message);
 }
 
 // Called every frame
 void AWeightPlate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 
 	if (HasAuthority())
 	{
@@ -52,61 +65,51 @@ void AWeightPlate::Tick(float DeltaTime)
 	
 		TArray<AActor*> OverlappingActors;
 		AActor* TriggerActor = nullptr;
-		M_TriggerBox->GetOverlappingActors(OverlappingActors);
-
+		M_TriggerShape->GetOverlappingActors(OverlappingActors);
+		
+			
+		
 		for (int ActorIdx = 0; ActorIdx < OverlappingActors.Num(); ActorIdx++)
 		{
 			AActor* A = OverlappingActors[ActorIdx];
 			if (A->ActorHasTag("WeightActor"))
 			{
 				TriggerActor = A;
+				M_WeightedActor = Cast<ATriggerActor>(TriggerActor);
 				break;
 			}
-			
 		
 		}
-		
-		if (TriggerActor && bTrigger == false)
+		if (TriggerActor)
 		{
-			bTrigger = true;
-			ATriggerActor* WeightedActor = Cast<ATriggerActor>(TriggerActor);
-
-			M_ActorToTrigger->M_CurrentWeight +=  WeightedActor->M_Weight;
-			//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Black,UKismetStringLibrary::Conv_IntToString(WeightedActor->M_Weight));
-			
-			M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
-
-			if (M_ActorToTrigger->M_CurrentWeight >= M_ActorToTrigger->M_WeightNeeded)
+			if (!bTrigger)
 			{
-				
-				if (M_ActorToTrigger->Implements<UGlobalFunctionsInterface>())
+				bTrigger = true;
+				GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red, TEXT("Activated"));
+				M_OnActivated.Broadcast();
+				M_ActorToTrigger->M_CurrentWeight +=  M_WeightedActor->M_Weight;
+				M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
+				if (M_ActorToTrigger->M_CurrentWeight >= M_ActorToTrigger->M_WeightNeeded)
 				{
-						
-						M_ActorToTrigger->M_ActivateActor.Broadcast();
-			
+					M_ActorToTrigger->M_ActivateActor.Broadcast();
 				}
-				
 			}
 		}
-	}
-
-}
-
-void AWeightPlate::OnEndOverlap(UPrimitiveComponent* OtherComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex)
-{
-	if (OtherActor->GetClass()->IsChildOf(ATriggerActor::StaticClass()))
-	{
-		ATriggerActor* TriggerActor = Cast<ATriggerActor>(OtherActor);
-		M_ActorToTrigger->M_CurrentWeight -= TriggerActor->M_Weight;
-		M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
-		M_ActorToTrigger->M_ResetActor.Broadcast();
-		bTrigger = false;
+		else
+		{
+			if (bTrigger)
+			{
+				bTrigger = false;
+				M_ActorToTrigger->M_CurrentWeight -= M_WeightedActor->M_Weight;
+				M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
+				M_OnDeactivated.Broadcast();
+			}
+		}
+		
 	}
 }
 
-void AWeightPlate::WeightTrigger_Implementation()
-{
-	
-}
+
+
+
 

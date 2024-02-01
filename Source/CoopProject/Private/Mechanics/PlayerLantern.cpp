@@ -3,6 +3,7 @@
 
 #include "Mechanics/PlayerLantern.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Mechanics/HiddenSymbols.h"
 
 // Sets default values
@@ -29,6 +30,10 @@ APlayerLantern::APlayerLantern()
 	M_Mesh->SetupAttachment(RootComponent);
 	M_Mesh->SetIsReplicated(true);
 
+	M_Arrow = CreateDefaultSubobject<UArrowComponent>("Arrow");
+	M_Arrow->SetupAttachment(RootComponent);
+	M_Arrow->SetIsReplicated(true);
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> LanternMesh(TEXT("/Game/Assets/Lantern"));
     if (LanternMesh.Object)
     {
@@ -52,6 +57,7 @@ void APlayerLantern::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	ClippingTrace();
 	
 }
 
@@ -77,5 +83,44 @@ void APlayerLantern::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 	{
 		HiddenSymbols->SetSymbolVisibilty(true);
 	}
+}
+
+void APlayerLantern::ClippingTrace()
+{ /*
+	if (HasAuthority())
+	{
+		
+	
+		
+		FVector Start = GetActorLocation();
+		FVector End = Start + M_Arrow->GetForwardVector() * 10;
+		TArray<AActor*> ActorsToIgnore;
+		ActorsToIgnore.Add(this);
+		FHitResult Hit;
+		if (UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), Start, End, 15, ObjectTypes,true,ActorsToIgnore, EDrawDebugTrace::ForOneFrame,Hit, true))
+		{
+			 FString Msg = FString::Printf(TEXT("Hit Actor is: %s"), *UKismetSystemLibrary::GetDisplayName(Hit.GetActor()));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, Msg);
+
+			 if (M_Mesh->GetRelativeRotation() != FRotator(-0.5,0,0))
+			 {
+			 	M_Mesh->AddRelativeRotation(FRotator(-0.1,0,0));
+			 	
+			 }
+		
+		}
+		else
+		{
+			if (M_Mesh->GetRelativeRotation() != FRotator::ZeroRotator)
+			{
+				FRotator ResetRotation = FMath::RInterpTo(M_Mesh->GetRelativeRotation(), FRotator::ZeroRotator, GetWorld()->GetDeltaSeconds(), 20);
+				M_Mesh->SetRelativeRotation(ResetRotation);
+			}
+		
+		}
+	}
+	*/
+
+	
 }
 
