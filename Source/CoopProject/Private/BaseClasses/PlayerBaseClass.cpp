@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Pawn.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -17,7 +18,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Mechanics/MovableActor.h"
 #include "Mechanics/TriggerActor.h"
-#include "Net/UnrealNetwork.h"
 #include "Systems/AFGI_MainInstance.h"
 
 
@@ -52,8 +52,8 @@ void APlayerBaseClass::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
-	if (APlayerController* PC = Cast<APlayerController>(Controller))
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (PC)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 		{
@@ -63,10 +63,22 @@ void APlayerBaseClass::BeginPlay()
 		}
 		
 	}
-
+	
+		
+	
+		M_Pawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+		if (M_Pawn)
+		{
+			Print("PawnValid");
+		}
+		else
+		{
+			Print("PawnNotValid");
+		}
+}
 	
 
-}
+
 
 void APlayerBaseClass::Move(const FInputActionValue& Value)
 {
@@ -128,7 +140,11 @@ void APlayerBaseClass::Look(const FInputActionValue& Value)
     	
     	float yAxis = LookAxisVector.Y * M_MouseSens * M_InvertedAmountY;
         AddControllerYawInput(xAxis);
-        AddControllerPitchInput(yAxis);
+    	AddControllerPitchInput(yAxis);
+    	
+    	M_Pawn->SetRemoteViewPitch(yAxis);
+
+    	
     }
 }
 
@@ -280,8 +296,10 @@ void APlayerBaseClass::Ping()
 	if (HasAuthority())
 	{
 		FHitResult Hit;
-		FVector Start = GetActorLocation();
-		FVector End = GetCameraComponent()->GetComponentLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+		FVector Start = this->GetCameraComponent()->GetComponentLocation();
+		FVector End = Start + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+		AActor* CamOwner = GetCameraComponent()->GetOwner();
+		GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Orange,UKismetSystemLibrary::GetDisplayName(CamOwner));
 		if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 		{
 			M_Params.Owner = this;
@@ -307,13 +325,19 @@ void APlayerBaseClass::Ping()
 	}
 }
 
+void APlayerBaseClass::UpdateCameraRotation()
+{
+	GetCameraComponent()->SetRelativeRotation(FRotator(0, M_CameraPitch, M_CameraYaw));
+}
 
 
 void APlayerBaseClass::ServerRPC_Ping_Implementation()
 {
 	FHitResult Hit;
-	FVector Start = GetActorLocation();
-	FVector End = GetCameraComponent()->GetComponentLocation() + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+	FVector Start = this->GetCameraComponent()->GetComponentLocation();
+	FVector End =  Start + GetCameraComponent()->GetForwardVector() * M_PingDistance;
+	AActor* CamOwner = GetCameraComponent()->GetOwner();
+	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Orange,UKismetSystemLibrary::GetDisplayName(CamOwner));
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 	{
 		GetWorld()->SpawnActor<AActor>(M_PingActor, Hit.Location, FRotator::ZeroRotator, M_Params);
@@ -329,11 +353,25 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 }
 
 
+void APlayerBaseClass::ServerRPC_AddCameraPitch_Implementation(float PitchAdd)
+{
+	float CameraClampedPitch = FMath::Clamp(PitchAdd += M_CameraPitch, Controller->GetControlRotation().Pitch,Controller->GetControlRotation().Pitch + 100);
+
+	M_CameraPitch = CameraClampedPitch;
+}
+
+
+void APlayerBaseClass::OnRep_CameraPitch()
+{
+}
+
 void APlayerBaseClass::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(APlayerBaseClass, M_bIsGrabbed, COND_OwnerOnly);
+
+	DOREPLIFETIME(APlayerBaseClass, M_CameraPitch)
 }
 
 void APlayerBaseClass::ServerRPC_PickupObject_Implementation(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation)
@@ -422,6 +460,8 @@ void APlayerBaseClass::Tick(float DeltaTime)
 		}
 		
 	}
+
+	//UpdateCameraRotation();
 
 }
 
