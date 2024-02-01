@@ -97,8 +97,6 @@ protected:
 	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
 
 	void Ping();
-
-	void UpdateCameraRotation();
 	
 	
 	
@@ -124,23 +122,13 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Ping();
-
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_AddCameraPitch(float PitchAdd);
+	
+	
 
 
 	
 
 	//Server Variables
-
-	UPROPERTY(ReplicatedUsing = OnRep_CameraPitch, BlueprintReadOnly)
-	float M_CameraPitch;
-	
-	
-	float M_CameraYaw;
-
-	UFUNCTION()
-	void OnRep_CameraPitch();
 	
 	    
 
@@ -177,6 +165,8 @@ protected:
 	TSubclassOf<AActor> M_PingActor;
 
 	APawn* M_Pawn;
+
+
 	
 
 	UPROPERTY(EditAnywhere)

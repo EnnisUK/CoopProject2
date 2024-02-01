@@ -63,7 +63,10 @@ void APlayerBaseClass::BeginPlay()
 		}
 		
 	}
-	
+
+
+	if (!HasAuthority())
+	{
 		
 	
 		M_Pawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
@@ -75,6 +78,7 @@ void APlayerBaseClass::BeginPlay()
 		{
 			Print("PawnNotValid");
 		}
+	}	
 }
 	
 
@@ -108,7 +112,7 @@ void APlayerBaseClass::Move(const FInputActionValue& Value)
 }
 
 void APlayerBaseClass::Look(const FInputActionValue& Value)
-{
+{/*
 	UAFGI_MainInstance* MyGameInstance;
 	MyGameInstance = Cast<UAFGI_MainInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
@@ -142,10 +146,7 @@ void APlayerBaseClass::Look(const FInputActionValue& Value)
         AddControllerYawInput(xAxis);
     	AddControllerPitchInput(yAxis);
     	
-    	M_Pawn->SetRemoteViewPitch(yAxis);
-
-    	
-    }
+    }*/
 }
 
 void APlayerBaseClass::ServerRPC_StartSprint_Implementation()
@@ -325,10 +326,6 @@ void APlayerBaseClass::Ping()
 	}
 }
 
-void APlayerBaseClass::UpdateCameraRotation()
-{
-	GetCameraComponent()->SetRelativeRotation(FRotator(0, M_CameraPitch, M_CameraYaw));
-}
 
 
 void APlayerBaseClass::ServerRPC_Ping_Implementation()
@@ -353,25 +350,15 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 }
 
 
-void APlayerBaseClass::ServerRPC_AddCameraPitch_Implementation(float PitchAdd)
-{
-	float CameraClampedPitch = FMath::Clamp(PitchAdd += M_CameraPitch, Controller->GetControlRotation().Pitch,Controller->GetControlRotation().Pitch + 100);
-
-	M_CameraPitch = CameraClampedPitch;
-}
 
 
-void APlayerBaseClass::OnRep_CameraPitch()
-{
-}
+
 
 void APlayerBaseClass::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(APlayerBaseClass, M_bIsGrabbed, COND_OwnerOnly);
-
-	DOREPLIFETIME(APlayerBaseClass, M_CameraPitch)
 }
 
 void APlayerBaseClass::ServerRPC_PickupObject_Implementation(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation)
@@ -460,8 +447,8 @@ void APlayerBaseClass::Tick(float DeltaTime)
 		}
 		
 	}
-
-	//UpdateCameraRotation();
+	
+	
 
 }
 
