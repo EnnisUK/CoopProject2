@@ -10,6 +10,8 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Particles/ParticleSystem.h"
@@ -19,6 +21,7 @@
 #include "Mechanics/MovableActor.h"
 #include "Mechanics/TriggerActor.h"
 #include "Systems/AFGI_MainInstance.h"
+#include "Systems/GlobalFunctionsInterface.h"
 
 
 // Sets default values
@@ -111,42 +114,16 @@ void APlayerBaseClass::Move(const FInputActionValue& Value)
     }
 }
 
-void APlayerBaseClass::Look(const FInputActionValue& Value)
-{/*
-	UAFGI_MainInstance* MyGameInstance;
-	MyGameInstance = Cast<UAFGI_MainInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-
-	if (MyGameInstance->M_bUseInvertedMouseY)
+void APlayerBaseClass::Pulse()
+{
+	if (M_bCanPulse)
 	{
-		M_InvertedAmountY = 1;
-	}
-	else
-	{
-		M_InvertedAmountY = -1;
-	}
-	if (MyGameInstance->M_bUseInvertedMouseX)
-	{
-		M_InvertedAmountX = 1;
-	}
-	else
-	{
-		M_InvertedAmountX = -1;
+		M_bCanPulse = false;
+		SpawnVfx.Broadcast();
+	
+		ServerRPC_LightPulse();
 	}
 	
-    // input is a Vector2D
-    const FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-    if (Controller != nullptr)
-    {
-    	
-    	
-    	float xAxis = LookAxisVector.X * M_MouseSens * M_InvertedAmountX;
-    	
-    	float yAxis = LookAxisVector.Y * M_MouseSens * M_InvertedAmountY;
-        AddControllerYawInput(xAxis);
-    	AddControllerPitchInput(yAxis);
-    	
-    }*/
 }
 
 void APlayerBaseClass::ServerRPC_StartSprint_Implementation()
@@ -350,9 +327,28 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 }
 
 
+void APlayerBaseClass::ServerRPC_LightPulse_Implementation()
+{
+	if (HasAuthority())
+	{
+		TArray<AActor*> ActorsToIgnore;
+		TArray<FHitResult> HitResultArray;
 
-
-
+		if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(),GetActorLocation(), GetActorLocation(), M_LightPulseRadius, M_TraceType, false, ActorsToIgnore, EDrawDebugTrace::None, HitResultArray, true))
+		{
+			for (FHitResult HR : HitResultArray)
+			{
+				if (HR.GetActor()->Implements<UGlobalFunctionsInterface>())
+				{
+					IGlobalFunctionsInterface::Execute_Interact(HR.GetActor());
+				}
+				
+				
+			}
+		}
+		
+	}
+}
 
 void APlayerBaseClass::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -460,13 +456,13 @@ void APlayerBaseClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	
 	EnhancedInputComponent->BindAction(M_MoveAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Move);
-    EnhancedInputComponent->BindAction(M_LookAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Look);
     EnhancedInputComponent->BindAction(M_JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(M_JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(M_SprintAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Sprint);
 	EnhancedInputComponent->BindAction(M_GrabAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Grab);
 	EnhancedInputComponent->BindAction(M_PingAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Ping);
 	EnhancedInputComponent->BindAction(M_PushToTalk, ETriggerEvent::Triggered, this, &APlayerBaseClass::PushToTalk);
+	EnhancedInputComponent->BindAction(M_PulseAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Pulse);
 
 }
 

@@ -33,6 +33,12 @@ public:
 
 	
 	virtual void ShowActor() {}
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void Interact();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ButtonActivateInteract(bool Activate);
 	
 	
 };

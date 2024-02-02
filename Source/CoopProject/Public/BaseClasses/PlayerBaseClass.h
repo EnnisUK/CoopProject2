@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
+#include "NiagaraSystem.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Interfaces/NetworkPredictionInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -14,6 +15,9 @@
 
 
 #include "PlayerBaseClass.generated.h"
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSpawnVFX);
 
 UCLASS()
 class COOPPROJECT_API APlayerBaseClass : public ACharacter
@@ -34,8 +38,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Move Action"))
 	class UInputAction* M_MoveAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Look Action"))
-	class UInputAction* M_LookAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Pulse Action"))
+	class UInputAction* M_PulseAction;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Jump Action"))
@@ -74,7 +78,7 @@ protected:
 
 	void Move(const FInputActionValue& Value);
 
-	void Look(const FInputActionValue& Value);
+	void Pulse();
 	
 	void Sprint();
 
@@ -97,6 +101,8 @@ protected:
 	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
 
 	void Ping();
+
+	
 	
 	
 	
@@ -122,6 +128,9 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Ping();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_LightPulse();
 	
 	
 
@@ -144,7 +153,14 @@ protected:
 
 	bool M_IsSpeaking = false;
 
-	
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "LightPulseRadius"))
+	float M_LightPulseRadius;
+
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "TraceObject"))
+	TEnumAsByte<ETraceTypeQuery> M_TraceType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,meta = (DisplayName = "LightPulseVFX"))
+	UNiagaraSystem* M_LightPulseVFX;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Sprinting"))
 	bool bIsSprinting;
@@ -166,9 +182,6 @@ protected:
 
 	APawn* M_Pawn;
 
-
-	
-
 	UPROPERTY(EditAnywhere)
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 
@@ -189,6 +202,11 @@ protected:
 
 	float M_InvertedAmountX = -1;
 
+	UPROPERTY(BlueprintAssignable)
+	FSpawnVFX SpawnVfx;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "CanPulse"))
+	bool M_bCanPulse = true;
 	
 
 public:	
