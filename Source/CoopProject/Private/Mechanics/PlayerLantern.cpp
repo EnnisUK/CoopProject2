@@ -4,6 +4,7 @@
 #include "Mechanics/PlayerLantern.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Mechanics/DisappearingActor.h"
 #include "Mechanics/HiddenSymbols.h"
 
 // Sets default values
@@ -73,16 +74,35 @@ void APlayerLantern::OnComponentStartOverlap(UPrimitiveComponent* OverlappedComp
 		}
 		
 	}
+	if (OtherActor->GetClass()->IsChildOf(ADisappearingActor::StaticClass()))
+	{
+		if (IGlobalFunctionsInterface* GlobalFunctionsInterface = Cast<IGlobalFunctionsInterface>(OtherActor))
+		{
+			GlobalFunctionsInterface->HideActor();
+		}
+	}
 }
 
 void APlayerLantern::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	AHiddenSymbols* HiddenSymbols = Cast<AHiddenSymbols>(OtherActor);
-	if (HiddenSymbols)
+	if (OtherActor->GetClass()->IsChildOf(AHiddenSymbols::StaticClass()))
 	{
-		HiddenSymbols->SetSymbolVisibilty(true);
+		AHiddenSymbols* HiddenSymbols = Cast<AHiddenSymbols>(OtherActor);
+		if (HiddenSymbols)
+		{
+			HiddenSymbols->SetSymbolVisibilty(true);
+		}
 	}
+
+	if (OtherActor->GetClass()->IsChildOf(ADisappearingActor::StaticClass()))
+	{
+		if (IGlobalFunctionsInterface* GlobalFunctionsInterface = Cast<IGlobalFunctionsInterface>(OtherActor))
+		{
+			GlobalFunctionsInterface->ShowActor();
+		}
+	}
+	
 }
 
 void APlayerLantern::ClippingTrace()

@@ -25,6 +25,14 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void WeightTrigger();
+
+	
+	virtual void HideActor() {}
+
+
+
+	
+	virtual void ShowActor() {}
 	
 	
 };
