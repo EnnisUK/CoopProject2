@@ -83,7 +83,7 @@ void ADisappearingActor::ServerRPC_HideActor_Implementation()
 {
 	M_LightsOverlapping++;
 	M_LightsOverlapping = FMath::Clamp(M_LightsOverlapping, 0, 2);
-	if (M_LightsOverlapping == 2 && !M_bIsHidden)
+	if (M_LightsOverlapping >= M_LightsNeeded && !M_bIsHidden)
 	{
 		M_bIsHidden = true;
 		M_Mesh->SetHiddenInGame(M_bIsHidden);
@@ -107,7 +107,7 @@ void ADisappearingActor::ServerRPC_ShowActor_Implementation()
 {
 	M_LightsOverlapping--;
 	M_LightsOverlapping = FMath::Clamp(M_LightsOverlapping, 0, 2);
-	if (M_bIsHidden)
+	if (M_bIsHidden && M_LightsOverlapping < M_LightsNeeded)
 	{
 		M_bIsHidden = false;
 		M_Mesh->SetHiddenInGame(M_bIsHidden);

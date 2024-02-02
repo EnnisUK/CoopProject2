@@ -32,6 +32,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "LightsOverlapping"))
 	int M_LightsOverlapping;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly ,meta = (DisplayName = "LightsNeeded", ExposeOnSpawn = "true"))
+	int M_LightsNeeded;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "TargetVisibility"))
 	float M_TargetVisibility;
