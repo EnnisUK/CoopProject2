@@ -7,6 +7,9 @@
 #include "Systems/GlobalFunctionsInterface.h"
 #include "LightButton.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FResetInteract);
+
 UCLASS()
 class COOPPROJECT_API ALightButton : public AActor, public IGlobalFunctionsInterface
 {
@@ -15,8 +18,11 @@ class COOPPROJECT_API ALightButton : public AActor, public IGlobalFunctionsInter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "Root"))
 	USceneComponent* M_Root;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "Mesh"))
-	UStaticMeshComponent* M_Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "CrystalMesh"))
+	UStaticMeshComponent* M_CrystalMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "StandMesh"))
+	UStaticMeshComponent* M_StandMesh;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -25,10 +31,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", DisplayName = "ActorsToActivate"))
 	TArray<AActor*> M_ActorsToActivate;
 
+	UPROPERTY(ReplicatedUsing=OnRep_bIsActive, BlueprintReadOnly)
 	bool M_bIsActive;
 
 	UFUNCTION(BlueprintCallable)
 	void ActivateCrystal();
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInstance* M_CrystalOn;
+	UPROPERTY(EditAnywhere)
+	UMaterialInstance* M_CrystalOff;
+
+	UPROPERTY(BlueprintAssignable)
+	FResetInteract M_ResetInteract;
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,4 +55,8 @@ public:
 
 	void Interact_Implementation();
 
+	UFUNCTION()
+	void OnRep_bIsActive();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

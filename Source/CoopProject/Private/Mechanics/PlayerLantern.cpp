@@ -35,7 +35,7 @@ APlayerLantern::APlayerLantern()
 	M_Arrow->SetupAttachment(RootComponent);
 	M_Arrow->SetIsReplicated(true);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> LanternMesh(TEXT("/Game/Assets/Lantern"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> LanternMesh(TEXT("/Game/Assets/Lantern/Lantern"));
     if (LanternMesh.Object)
     {
 	    M_Mesh->SetStaticMesh(LanternMesh.Object);

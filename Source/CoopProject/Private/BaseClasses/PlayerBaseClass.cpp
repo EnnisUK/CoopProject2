@@ -329,8 +329,7 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 
 void APlayerBaseClass::ServerRPC_LightPulse_Implementation()
 {
-
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("Im Gay"));
+	
 	if (HasAuthority())
 	{
 		TArray<AActor*> ActorsToIgnore;
