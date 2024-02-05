@@ -28,28 +28,10 @@ APressurePlate::APressurePlate()
 	M_Mesh->SetupAttachment(RootComponent);
 	M_Mesh->SetIsReplicated(true);
 
-	/*const auto MeshAsset = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Game/Stylized_Egypt/Meshes/building/SM_building_part_08"));
-
-	if (MeshAsset.Succeeded())
-	{
-		M_Mesh->SetStaticMesh(MeshAsset.Object);
-		M_Mesh->SetRelativeScale3D(FVector(4,4, 0.5));
-		M_Mesh->SetRelativeLocation(FVector(0, 0, 7.2));
-	}
-
 	M_TriggerShape = CreateDefaultSubobject<UStaticMeshComponent>("TriggerShape");
 	M_TriggerShape->SetupAttachment(RootComponent);
 	M_TriggerShape->SetIsReplicated(true);
-
-	const auto TriggerMeshAsset = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Game/StarterContent/Shapes/Shape_Cylinder"));
-
-    if (TriggerMeshAsset.Succeeded())
-    {
-	    M_TriggerShape->SetStaticMesh(TriggerMeshAsset.Object);
-    	M_TriggerShape->SetRelativeScale3D(FVector(3.3,3.3, 0.2));
-    	M_TriggerShape->SetRelativeLocation(FVector(0, 0, 10));
-    }*/
-
+	
 
 	
 }
@@ -94,7 +76,10 @@ void APressurePlate::CheckOverlappingActors()
 			{
 				TriggerActor = A;
 				break;
+				
 			}
+		
+			
 		
 		}
 		if (TriggerActor)
@@ -102,19 +87,19 @@ void APressurePlate::CheckOverlappingActors()
 			if (!M_bActivated)
 			{
 				M_bActivated = true;
-				GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red, TEXT("Activated"));
 				M_OnActivated.Broadcast();
 			}
+			
 		}
 		else
 		{
 			if (M_bActivated)
 			{
 				M_bActivated = false;
-				GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red, TEXT("Deactivated"));
 				M_OnDeactivated.Broadcast();
 			}
 		}
+		
 	}
 }
 
