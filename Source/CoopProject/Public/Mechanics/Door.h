@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Systems/GlobalFunctionsInterface.h"
 #include "Door.generated.h"
 
 UCLASS()
-class COOPPROJECT_API ADoor : public AActor
+class COOPPROJECT_API ADoor : public AActor, public IGlobalFunctionsInterface
 {
 	GENERATED_BODY()
 	
@@ -27,5 +28,23 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void ButtonActivateInteract(bool Activate) override;
+
+	void ActivateDoor();
+
+	bool M_ActivateDoor;
+
+	FRotator M_TargetRot;
+
+	FRotator M_StartRotation;
+
+	UPROPERTY(BlueprintReadOnly)
+	int M_ActivatedButtons;
+
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "NeededButtons"))
+	int M_NeededButtons;
+
+	FTimerHandle M_RotateDoor;
 
 };

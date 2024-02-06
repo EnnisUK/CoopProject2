@@ -38,8 +38,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void Interact();
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void ButtonActivateInteract(bool Activate);
+	
+	virtual void ButtonActivateInteract(bool Activate) {}
 
 
 	

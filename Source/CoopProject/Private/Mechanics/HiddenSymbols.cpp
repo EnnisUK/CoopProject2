@@ -31,7 +31,6 @@ void AHiddenSymbols::Tick(float DeltaTime)
 
 void AHiddenSymbols::SetSymbolVisibilty(bool bVisible)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, TEXT("SetVis"));
 	SetActorHiddenInGame(bVisible);
 }
 
