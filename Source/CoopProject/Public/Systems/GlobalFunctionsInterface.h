@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "GlobalFunctionsInterface.generated.h"
 
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UGlobalFunctionsInterface : public UInterface
@@ -39,6 +40,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ButtonActivateInteract(bool Activate);
+
+
 	
 	
 };
