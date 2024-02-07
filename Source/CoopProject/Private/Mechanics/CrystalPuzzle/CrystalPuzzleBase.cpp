@@ -5,6 +5,7 @@
 
 #include "NiagaraComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ACrystalPuzzleBase::ACrystalPuzzleBase()
@@ -117,13 +118,43 @@ void ACrystalPuzzleBase::ButtonActivateInteract(bool Activate)
 	{
 		M_bCrystalOn = true;
 		M_CrystalMesh->SetMaterial(0, M_CrystalMatOn);
+		M_MeshMat = M_CrystalMatOn;
 		M_LaserVFX->SetVisibility(true);
 	}
 	else
 	{
 		M_bCrystalOn = false;
 		M_CrystalMesh->SetMaterial(0, M_CrystalMatOff);
+		M_MeshMat = M_CrystalMatOff;
 		M_LaserVFX->SetVisibility(false);
 	}
+}
+
+void ACrystalPuzzleBase::OnRep_HitPoint()
+{
+}
+
+void ACrystalPuzzleBase::OnRep_EndPoint()
+{
+}
+
+void ACrystalPuzzleBase::OnRep_MeshMat()
+{
+	M_CrystalMesh->SetMaterial(0, M_MeshMat);
+}
+
+void ACrystalPuzzleBase::OnRep_IsBlocking()
+{
+}
+
+void ACrystalPuzzleBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACrystalPuzzleBase, M_End);
+	DOREPLIFETIME(ACrystalPuzzleBase, M_HitEnd);
+	DOREPLIFETIME(ACrystalPuzzleBase, M_MeshMat);
+	DOREPLIFETIME(ACrystalPuzzleBase, M_bIsBlocking);
+	
 }
 
