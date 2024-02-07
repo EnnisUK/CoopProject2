@@ -53,9 +53,9 @@ void ALightButton::ActivateCrystal()
 		{
 			for (AActor* TA : M_ActorsToActivate)
 			{
-				if (TA->Implements<UGlobalFunctionsInterface>())
+				if (IGlobalFunctionsInterface* GlobalInterface = Cast<IGlobalFunctionsInterface>(TA))
 				{
-					IGlobalFunctionsInterface::Execute_ButtonActivateInteract(TA, M_bIsActive);
+					GlobalInterface->ButtonActivateInteract(true);
 				}
 		
 			}
@@ -71,9 +71,9 @@ void ALightButton::ActivateCrystal()
 		{
 			for (AActor* TA : M_ActorsToActivate)
 			{
-				if (TA->Implements<UGlobalFunctionsInterface>())
+				if (IGlobalFunctionsInterface* GlobalInterface = Cast<IGlobalFunctionsInterface>(TA))
 				{
-					IGlobalFunctionsInterface::Execute_ButtonActivateInteract(TA, M_bIsActive);
+					GlobalInterface->ButtonActivateInteract(false);
 				}
 		
 			}
