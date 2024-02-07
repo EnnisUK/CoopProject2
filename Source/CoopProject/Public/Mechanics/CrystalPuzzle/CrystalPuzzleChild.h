@@ -3,18 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NiagaraSystem.h"
 #include "GameFramework/Actor.h"
-#include "Components/ArrowComponent.h"
+#include "NiagaraSystem.h"
+#include "NiagaraComponent.h"
 #include "Systems/GlobalFunctionsInterface.h"
-#include "CrystalPuzzleBase.generated.h"
-
-
+#include "CrystalPuzzleChild.generated.h"
 
 UCLASS()
-
-
-class COOPPROJECT_API ACrystalPuzzleBase : public AActor, public IGlobalFunctionsInterface
+class COOPPROJECT_API ACrystalPuzzleChild : public AActor, public IGlobalFunctionsInterface
 {
 	GENERATED_BODY()
 
@@ -26,12 +22,11 @@ class COOPPROJECT_API ACrystalPuzzleBase : public AActor, public IGlobalFunction
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true", DisplayName = "SphereMesh"))
 	UStaticMeshComponent* M_SphereMesh;
-
 	
 public:	
 	// Sets default values for this actor's properties
-	ACrystalPuzzleBase();
-	
+	ACrystalPuzzleChild();
+
 	UMaterialInstance* M_CrystalMatOff;
 	UMaterialInstance* M_CrystalMatOn;
 
@@ -53,18 +48,16 @@ public:
 	FTimerHandle M_RotateTimer;
 
 	FRotator M_TargetRot;
-	
-	FTimerHandle LineTraceHandle;
 
 	UPROPERTY(ReplicatedUsing = OnRep_MeshMat)
 	UMaterialInterface* M_MeshMat;
 	
 	bool M_bCrystalOn;
 
+	bool M_bIsActive;
+
 	UPROPERTY(EditAnywhere, meta = (DisplayName = "LineTraceDistance"))
 	float M_LineTraceDistance;
-
-
 
 protected:
 	// Called when the game starts or when spawned
@@ -95,6 +88,5 @@ public:
 	void OnRep_IsBlocking();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
 
 };

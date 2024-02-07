@@ -5,6 +5,7 @@
 
 #include "NiagaraComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Mechanics/CrystalPuzzle/CrystalPuzzleChild.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -55,7 +56,7 @@ void ACrystalPuzzleBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FTimerHandle LineTraceHandle;
+	
 
 	GetWorldTimerManager().SetTimer(LineTraceHandle, this, &ACrystalPuzzleBase::LineTrace, 0.01, true);
 	
@@ -70,27 +71,42 @@ void ACrystalPuzzleBase::LineTrace()
 	FHitResult Hit;
 	if (M_bCrystalOn)
 	{
-		UKismetSystemLibrary::LineTraceSingle(GetWorld(),M_Start, M_End, UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore, EDrawDebugTrace::ForDuration, Hit, true);
-		M_bIsBlocking = Hit.bBlockingHit;
-
-		if (Hit.bBlockingHit)
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),M_Start, M_End, UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore, EDrawDebugTrace::ForDuration, Hit, true))
 		{
-			M_HitEnd = Hit.Location;
-		}
+		
+			M_bIsBlocking = Hit.bBlockingHit;
+
+			if (Hit.bBlockingHit)
+			{
+				M_HitEnd = Hit.Location;
+			}
+			if (Hit.GetActor()->GetClass()->IsChildOf(ACrystalPuzzleChild::StaticClass()))
+			{
+				if (IGlobalFunctionsInterface* GlobalFunctionsInterface = Cast<IGlobalFunctionsInterface>(Hit.GetActor()))
+				{
+					GlobalFunctionsInterface->ButtonActivateInteract(true);
+				}	
+			}
+		}	
 		
 	}
 }
 
 void ACrystalPuzzleBase::Rotate()
 {
-	if (!GetActorRotation().Equals(M_TargetRot))
+	GetWorldTimerManager().ClearTimer(LineTraceHandle);
+	if (!GetActorRotation().Equals(M_TargetRot, 10))
 	{
-		FRotator NewRot = FMath::RInterpTo(GetActorRotation(), M_TargetRot, GetWorld()->GetDeltaSeconds(), 1.5);
+		FRotator NewRot = FMath::RInterpTo(GetActorRotation(), M_TargetRot, GetWorld()->GetDeltaSeconds(), 3);
 		SetActorRotation(NewRot);
+		M_LaserVFX->SetWorldRotation(NewRot);
 	}
 	else
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Emerald, TEXT("FinishedRotate"));
 		GetWorldTimerManager().ClearTimer(M_RotateTimer);
+		GetWorldTimerManager().SetTimer(LineTraceHandle, this, &ACrystalPuzzleBase::LineTrace, 0.01, true);
+		
 	}
 	
 	
