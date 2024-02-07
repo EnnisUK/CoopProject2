@@ -35,23 +35,27 @@ public:
 	UMaterialInstance* M_CrystalMatOff;
 	UMaterialInstance* M_CrystalMatOn;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "EndPoint"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "EndPoint"), ReplicatedUsing = OnRep_EndPoint)
 	FVector M_End;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "StartPoint"))
 	FVector M_Start;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "HitLocation"))
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "HitLocation"), ReplicatedUsing = OnRep_HitPoint)
 	FVector M_HitEnd;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraComponent* M_LaserVFX;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "IsBlocking"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "IsBlocking"), ReplicatedUsing = OnRep_IsBlocking)
 	bool M_bIsBlocking;
 
 	FTimerHandle M_RotateTimer;
 
 	FRotator M_TargetRot;
+
+	UPROPERTY(ReplicatedUsing = OnRep_MeshMat)
+	UMaterialInterface* M_MeshMat;
 	
 	bool M_bCrystalOn;
 
@@ -75,5 +79,20 @@ public:
 	virtual void InteractPure() override;
 
 	virtual void ButtonActivateInteract(bool Activate) override;
+	
+	UFUNCTION()
+	void OnRep_HitPoint();
+
+	UFUNCTION()
+	void OnRep_EndPoint();
+
+	UFUNCTION()
+	void OnRep_MeshMat();
+
+	UFUNCTION()
+	void OnRep_IsBlocking();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 
 };
