@@ -37,6 +37,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ActivateCrystal();
 
+	
+
 	UPROPERTY(EditAnywhere)
 	UMaterialInstance* M_CrystalOn;
 	UPROPERTY(EditAnywhere)

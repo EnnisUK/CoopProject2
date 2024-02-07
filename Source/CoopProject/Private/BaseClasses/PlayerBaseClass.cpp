@@ -343,6 +343,10 @@ void APlayerBaseClass::ServerRPC_LightPulse_Implementation()
 				{
 					IGlobalFunctionsInterface::Execute_Interact(HR.GetActor());
 				}
+				if (IGlobalFunctionsInterface* GlobalFunctionsInterface = Cast<IGlobalFunctionsInterface>(HR.GetActor()))
+				{
+					GlobalFunctionsInterface->InteractPure();
+				}
 				
 				
 			}
