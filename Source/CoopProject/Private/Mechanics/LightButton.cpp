@@ -46,7 +46,6 @@ void ALightButton::ActivateCrystal()
 {
 	if (!M_bIsActive)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Purple, TEXT("Called from LightButton.CPP/ ActivateCrystal = true"));
 		M_bIsActive = true;
 		M_CrystalMesh->SetMaterial(0, M_CrystalOn);
 		if (M_ActorsToActivate.Num() > 0)
