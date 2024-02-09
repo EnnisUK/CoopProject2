@@ -37,7 +37,8 @@ void ACharacterController::PushToTalk(bool TurnOnMic)
 	if (TurnOnMic)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Mic On, called from CharacterCon"));
-		UUniversalVoiceChat::VoiceChatStartSpeak(false, true, 0, false, 0);
+		TArray<int32> RadioIndex;
+		UUniversalVoiceChat::VoiceChatStartSpeak(true, true, RadioIndex, false, 0);
 	}
 	else
 	{
@@ -53,16 +54,13 @@ void ACharacterController::CheckPing()
 	M_PlayerState = Cast<AMainPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0));
 	if (M_PlayerState)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,2,FColor::Yellow, TEXT("Player State Valid"));
 		if (M_PlayerState->GetCompressedPing() * 4 > M_HighPingThreshold) // Ping is compressed; it's ping / 4
 		{
 			M_ShowWifi.Broadcast();
-			GEngine->AddOnScreenDebugMessage(-1,2,FColor::Yellow, TEXT("Show Wifi Broadcast"));
 		}
 		else
 		{
 			M_HideWifi.Broadcast();
-			GEngine->AddOnScreenDebugMessage(-1,2,FColor::Yellow, TEXT("Hide Wifi Broadcast"));
 		}
 			
 	}
