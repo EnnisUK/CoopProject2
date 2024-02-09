@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
 #include "Mechanics/CodeMovableObject.h"
+#include "Systems/GlobalFunctionsInterface.h"
 #include "CodeSheet.generated.h"
 
 
@@ -13,7 +14,7 @@
  * 
  */
 UCLASS()
-class COOPPROJECT_API ACodeSheet : public AStaticMeshActor
+class COOPPROJECT_API ACodeSheet : public AStaticMeshActor, public IGlobalFunctionsInterface
 {
 	GENERATED_BODY()
 
@@ -33,5 +34,7 @@ public:
 	void OnRep_ChangeInstance();
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	void Interact_Implementation();
 	
 };
