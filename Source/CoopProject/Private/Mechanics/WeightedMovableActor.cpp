@@ -3,6 +3,8 @@
 
 #include "Mechanics/WeightedMovableActor.h"
 
+#include "Net/UnrealNetwork.h"
+
 AWeightedMovableActor::AWeightedMovableActor()
 {
 	bReplicates = true;
@@ -29,4 +31,14 @@ void AWeightedMovableActor::BeginPlay()
 
 	M_Transporter->SetPoints(StartPoint, EndPoint);
 	
+}
+
+void AWeightedMovableActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AWeightedMovableActor, M_CurrentWeight);
+}
+
+void AWeightedMovableActor::OnRep_CurrentWeight()
+{
 }
