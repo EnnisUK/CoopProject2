@@ -87,12 +87,17 @@ void AWeightPlate::Tick(float DeltaTime)
 				bTrigger = true;
 				GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red, TEXT("Activated"));
 				M_OnActivated.Broadcast();
-				M_ActorToTrigger->M_CurrentWeight +=  M_WeightedActor->M_Weight;
-				M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
-				if (M_ActorToTrigger->M_CurrentWeight >= M_ActorToTrigger->M_WeightNeeded)
+				if (M_ActorToTrigger)
 				{
-					M_ActorToTrigger->M_ActivateActor.Broadcast();
+					M_ActorToTrigger->M_CurrentWeight +=  M_WeightedActor->M_Weight;
+					M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
+					if (M_ActorToTrigger->M_CurrentWeight >= M_ActorToTrigger->M_WeightNeeded)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Purple, TEXT("Passed Weight Check"));
+						M_ActorToTrigger->M_ActivateActor.Broadcast();
+					}
 				}
+				
 			}
 		}
 		else
@@ -102,6 +107,7 @@ void AWeightPlate::Tick(float DeltaTime)
 				bTrigger = false;
 				M_ActorToTrigger->M_CurrentWeight -= M_WeightedActor->M_Weight;
 				M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
+				M_ActorToTrigger->M_ResetActor.Broadcast();
 				M_OnDeactivated.Broadcast();
 			}
 		}
