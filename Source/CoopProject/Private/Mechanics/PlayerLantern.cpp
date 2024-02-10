@@ -81,6 +81,10 @@ void APlayerLantern::OnComponentStartOverlap(UPrimitiveComponent* OverlappedComp
 			GlobalFunctionsInterface->HideActor();
 		}
 	}
+	if (OtherActor->Implements<UGlobalFunctionsInterface>())
+	{
+		IGlobalFunctionsInterface::Execute_Interact(OtherActor);
+	}
 }
 
 void APlayerLantern::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -101,6 +105,11 @@ void APlayerLantern::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 		{
 			GlobalFunctionsInterface->ShowActor();
 		}
+	}
+	
+	if (OtherActor->Implements<UGlobalFunctionsInterface>())
+	{
+		IGlobalFunctionsInterface::Execute_Interact(OtherActor);
 	}
 	
 }

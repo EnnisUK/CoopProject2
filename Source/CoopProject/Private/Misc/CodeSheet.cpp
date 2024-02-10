@@ -29,3 +29,7 @@ void ACodeSheet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	
 	
 }
+
+void ACodeSheet::Interact_Implementation()
+{
+}
