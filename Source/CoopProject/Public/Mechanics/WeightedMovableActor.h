@@ -25,7 +25,7 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, meta = (DisplayName = "Transporter", AllowPrivateAccess = "true"))
 	UTransporterComponent* M_Transporter;
 	
-	UPROPERTY(EditAnywhere, Category = "Stats",meta = (DisplayName ="WeightNeeded"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = "Stats",meta = (DisplayName ="WeightNeeded"))
 	int M_WeightNeeded;
 
 	UPROPERTY(BlueprintAssignable)
@@ -34,7 +34,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FActivateWeightedPlate M_ActivateActor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly,meta = (DisplayName ="CurrentWeight"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,meta = (DisplayName ="CurrentWeight"), ReplicatedUsing = OnRep_CurrentWeight)
 	int M_CurrentWeight;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite ,meta = (DisplayName = "Point 1"))
@@ -46,5 +46,10 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION()
+	void OnRep_CurrentWeight();
 	
 };

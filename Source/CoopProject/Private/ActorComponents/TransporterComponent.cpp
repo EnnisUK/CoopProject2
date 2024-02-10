@@ -82,15 +82,26 @@ void UTransporterComponent::BeginPlay()
 		if (ALeverActor* LeverActor = Cast<ALeverActor>(TA))
 		{
 			LeverActor->M_ActivatedLever.AddDynamic(this, &UTransporterComponent::OnTriggerActorActivated);
+			continue;
 		}
 		if (AWeightPlate* WeightedPlate = Cast<AWeightPlate>(TA))
 		{
 			WeightedPlate->M_OnActivated.AddDynamic(this, &UTransporterComponent::OnTriggerActorActivated);
 			WeightedPlate->M_OnDeactivated.AddDynamic(this, &UTransporterComponent::OnTriggerActorDeactivated);
+			continue;
 		}
 		if (ACodeMovableObject* MovableObject = Cast<ACodeMovableObject>(TA))
 		{
 			MovableObject->M_ActivateActor.AddDynamic(this, &UTransporterComponent::OnTriggerActorActivated);
+			continue;
+		}
+		if (AWeightedMovableActor* WeightedMovableActor = Cast<AWeightedMovableActor>(TA))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Purple, TEXT("Transporter Delegate Called"));
+
+			WeightedMovableActor->M_ActivateActor.AddDynamic(this, &UTransporterComponent::OnTriggerActorActivated);
+			WeightedMovableActor->M_ResetActor.AddDynamic(this, &UTransporterComponent::OnTriggerActorDeactivated);
+			continue;
 		}
 		
 	}
