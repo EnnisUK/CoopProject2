@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void Interact();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetVisFunction();
+
 	virtual void InteractPure() {}
 
 	
