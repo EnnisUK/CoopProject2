@@ -83,7 +83,7 @@ void APlayerLantern::OnComponentStartOverlap(UPrimitiveComponent* OverlappedComp
 	}
 	if (OtherActor->Implements<UGlobalFunctionsInterface>())
 	{
-		IGlobalFunctionsInterface::Execute_Interact(OtherActor);
+		IGlobalFunctionsInterface::Execute_SetVisFunction(OtherActor);
 	}
 }
 
@@ -109,7 +109,7 @@ void APlayerLantern::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 	
 	if (OtherActor->Implements<UGlobalFunctionsInterface>())
 	{
-		IGlobalFunctionsInterface::Execute_Interact(OtherActor);
+		IGlobalFunctionsInterface::Execute_SetVisFunction(OtherActor);
 	}
 	
 }
