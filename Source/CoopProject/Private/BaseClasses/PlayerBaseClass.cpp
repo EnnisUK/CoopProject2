@@ -70,18 +70,11 @@ void APlayerBaseClass::BeginPlay()
 
 	if (!HasAuthority())
 	{
-		
-	
 		M_Pawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-		if (M_Pawn)
-		{
-			Print("PawnValid");
-		}
-		else
-		{
-			Print("PawnNotValid");
-		}
-	}	
+	}
+
+	M_SpawnLocation = GetActorLocation();
+	
 }
 	
 
@@ -301,6 +294,16 @@ void APlayerBaseClass::Ping()
 		M_PingOwner = M_Params.Owner;
 		ServerRPC_Ping();
 	}
+}
+
+void APlayerBaseClass::Respawn()
+{
+	SetActorLocation(M_SpawnLocation);
+}
+
+void APlayerBaseClass::ServerRPC_Respawn_Implementation()
+{
+	SetActorLocation(M_SpawnLocation);
 }
 
 
