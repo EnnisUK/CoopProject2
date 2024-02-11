@@ -102,7 +102,11 @@ protected:
 
 	void Ping();
 
-	
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerRPC_Respawn();
+
+	UFUNCTION(BlueprintCallable)
+	void Respawn();
 	
 	
 	
@@ -145,10 +149,12 @@ protected:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	
+public:	
 	
 	//Variables
 
+	FVector M_SpawnLocation;
+	
 	ACharacterController* M_CharacterController;
 
 	bool M_IsSpeaking = false;
@@ -208,8 +214,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "CanPulse"))
 	bool M_bCanPulse = true;
 	
-
-public:	
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
