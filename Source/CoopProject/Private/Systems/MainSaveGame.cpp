@@ -29,15 +29,12 @@ UMainSaveGame::UMainSaveGame()
 	M_FPSIndex = 0;
 
 	M_MouseSens = 1;
-
-	M_bUseInvertedMouseY = false;
-
-	M_bUseInvertedMouseX = false;
 	
 	M_Resolution = M_Resolution.X = 1920, M_Resolution.Y = 1080;
 
-	M_SelctedMic = "Elgato Wave in";
-
 	M_MicVolume = 1;
-	
+
+	M_InvertedSensX = 1;
+
+	M_InvertedSensY = 1;
 }
