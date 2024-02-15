@@ -144,7 +144,7 @@ void APlayerBaseClass::Sprint()
 			GetCharacterMovement()->MaxWalkSpeed = 1200;
 		}
 		
-		GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red,TEXT("StartedSprint"));
+		
 	}
 	else
 	{
@@ -158,7 +158,7 @@ void APlayerBaseClass::Sprint()
 			ServerRPC_EndSprint();
 			GetCharacterMovement()->MaxWalkSpeed = 600;
 		}
-		GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red,TEXT("EndedSprint"));
+		
 	}
 }
 
@@ -168,12 +168,12 @@ void APlayerBaseClass::Grab()
 	{
 		if (!M_bIsGrabbed)
 		{
-			Print(TEXT("Grabbed By Server"));
+			
 			GrabObject();
 		}
 		else
 		{
-			Print(TEXT("Dropped By Server"));
+			
 			DropObject();
 		}
 	}
@@ -181,12 +181,12 @@ void APlayerBaseClass::Grab()
 	{
 		if (!M_bIsGrabbed)
 		{
-			Print(TEXT("Grabbed By Client"));
+			
 			ServerRPC_GrabObject();
 		}
 		else
 		{
-			Print(TEXT("Dropped by Client"));
+			
 			ServerRPC_DropObject();
 		}
 	}
@@ -270,7 +270,6 @@ void APlayerBaseClass::Ping()
 		FVector Start = this->GetCameraComponent()->GetComponentLocation();
 		FVector End = Start + GetCameraComponent()->GetForwardVector() * M_PingDistance;
 		AActor* CamOwner = GetCameraComponent()->GetOwner();
-		GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Orange,UKismetSystemLibrary::GetDisplayName(CamOwner));
 		if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 		{
 			M_Params.Owner = this;
@@ -314,7 +313,6 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 	FVector Start = this->GetCameraComponent()->GetComponentLocation();
 	FVector End =  Start + GetCameraComponent()->GetForwardVector() * M_PingDistance;
 	AActor* CamOwner = GetCameraComponent()->GetOwner();
-	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Orange,UKismetSystemLibrary::GetDisplayName(CamOwner));
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 	{
 		GetWorld()->SpawnActor<AActor>(M_PingActor, Hit.Location, FRotator::ZeroRotator, M_Params);
