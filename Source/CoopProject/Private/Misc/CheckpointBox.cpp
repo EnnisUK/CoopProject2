@@ -3,7 +3,7 @@
 
 #include "Misc/CheckpointBox.h"
 
-#include "NavigationSystem.h"
+
 #include "BaseClasses/PlayerBaseClass.h"
 #include "GameFramework/Character.h"
 

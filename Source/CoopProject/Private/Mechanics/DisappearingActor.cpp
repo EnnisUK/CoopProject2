@@ -53,7 +53,7 @@ void ADisappearingActor::Tick(float DeltaTime)
 
 void ADisappearingActor::OnRep_IsHidden()
 {
-	M_Mesh->SetHiddenInGame(M_bIsHidden);
+	
 }
 
 void ADisappearingActor::OnRep_SetCollision()
@@ -72,9 +72,16 @@ void ADisappearingActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void ADisappearingActor::ShowActor()
 {
-	if (HasAuthority())
+	if (!HasAuthority())
 	{
 		ServerRPC_ShowActor();
+	}
+	else
+	{
+		M_bIsHidden = false;
+		RemoveOverlay();
+		M_HitBoxCollision = ECollisionEnabled::QueryAndPhysics;
+		M_HitBox->SetCollisionEnabled(M_HitBoxCollision);
 	}
 	
 }
@@ -86,7 +93,7 @@ void ADisappearingActor::ServerRPC_HideActor_Implementation()
 	if (M_LightsOverlapping >= M_LightsNeeded && !M_bIsHidden)
 	{
 		M_bIsHidden = true;
-		M_Mesh->SetHiddenInGame(M_bIsHidden);
+		ShowOverlay();
 		M_HitBoxCollision = ECollisionEnabled::NoCollision;
 		M_HitBox->SetCollisionEnabled(M_HitBoxCollision);
 		
@@ -96,9 +103,16 @@ void ADisappearingActor::ServerRPC_HideActor_Implementation()
 
 void ADisappearingActor::HideActor()
 {
-	if (HasAuthority())
+	if (!HasAuthority())
 	{
 		ServerRPC_HideActor();
+	}
+	else
+	{
+		M_bIsHidden = true;
+		ShowOverlay();
+		M_HitBoxCollision = ECollisionEnabled::NoCollision;
+		M_HitBox->SetCollisionEnabled(M_HitBoxCollision);
 	}
 	
 }
@@ -110,7 +124,7 @@ void ADisappearingActor::ServerRPC_ShowActor_Implementation()
 	if (M_bIsHidden && M_LightsOverlapping < M_LightsNeeded)
 	{
 		M_bIsHidden = false;
-		M_Mesh->SetHiddenInGame(M_bIsHidden);
+		RemoveOverlay();
 		M_HitBoxCollision = ECollisionEnabled::QueryAndPhysics;
 		M_HitBox->SetCollisionEnabled(M_HitBoxCollision);
 	}

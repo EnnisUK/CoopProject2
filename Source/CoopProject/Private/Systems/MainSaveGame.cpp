@@ -37,4 +37,6 @@ UMainSaveGame::UMainSaveGame()
 	M_InvertedSensX = 1;
 
 	M_InvertedSensY = 1;
+
+	M_AmountOfPlayers = 1;
 }

@@ -2,11 +2,15 @@
 
 #pragma once
 
+
+
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Systems/GlobalFunctionsInterface.h"
 #include "DisappearingActor.generated.h"
+
+
 
 UCLASS()
 class COOPPROJECT_API ADisappearingActor : public AActor, public IGlobalFunctionsInterface
@@ -47,6 +51,12 @@ public:
 
 	UPROPERTY(ReplicatedUsing = OnRep_SetCollision)
 	TEnumAsByte<ECollisionEnabled::Type> M_HitBoxCollision;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowOverlay();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void RemoveOverlay();
 
 protected:
 	// Called when the game starts or when spawned

@@ -71,4 +71,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicVolume"))
 	float M_MicVolume;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "AmountOfPlayers"))
+	int32 M_AmountOfPlayers;
+	
 };
