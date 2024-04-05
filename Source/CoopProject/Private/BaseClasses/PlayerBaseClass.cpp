@@ -206,17 +206,20 @@ void APlayerBaseClass::PushToTalk()
 	{
 		M_IsSpeaking = true;
 		M_CharacterController->PushToTalk(true);
+		M_ShowMic.Broadcast(true);
 	}
 	else if (M_IsSpeaking && M_CharacterController)
 	{
 		M_IsSpeaking = false;
 		M_CharacterController->PushToTalk(false);
+		M_ShowMic.Broadcast(false);
 	}
 }
 
 
 void APlayerBaseClass::GrabObject()
 {
+	M_HoldDistance = 400;
 	FCollisionQueryParams QueryParams;
 	TArray<AActor*> ActorsToIgnore;
 	FVector Start = GetActorLocation();
@@ -251,6 +254,41 @@ void APlayerBaseClass::ObjectMove()
 {
 	FVector TargetLocation = GetActorLocation() + FVector(0, 0, 100) + GetCameraComponent()->GetForwardVector() * M_HoldDistance;
 	M_PhysicsHandleComp->SetTargetLocationAndRotation(TargetLocation, GetOwner()->GetActorRotation());	
+}
+
+void APlayerBaseClass::ScrollUp()
+{
+	if (M_bIsGrabbed)
+	{
+		if (HasAuthority())
+		{
+			M_HoldDistance += 20;
+			M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
+		}
+		else
+		{
+			ServerRPC_ScrollUp();
+		}
+		
+	}
+}
+
+void APlayerBaseClass::ScrollDown()
+{
+	if (M_bIsGrabbed)
+	{
+		if (HasAuthority())
+		{
+			M_HoldDistance -= 20;
+			M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
+		}
+		else
+		{
+			ServerRPC_ScrollDown();
+		}
+		
+	}
+	
 }
 
 void APlayerBaseClass::PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation)
@@ -296,6 +334,18 @@ void APlayerBaseClass::Ping()
 void APlayerBaseClass::Respawn()
 {
 	SetActorLocation(M_SpawnLocation);
+}
+
+void APlayerBaseClass::ServerRPC_ScrollUp_Implementation()
+{
+	M_HoldDistance += 20;
+	M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
+}
+
+void APlayerBaseClass::ServerRPC_ScrollDown_Implementation()
+{
+	M_HoldDistance -= 20;
+	M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
 }
 
 void APlayerBaseClass::ServerRPC_Respawn_Implementation()
@@ -467,6 +517,9 @@ void APlayerBaseClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(M_PingAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Ping);
 	EnhancedInputComponent->BindAction(M_PushToTalk, ETriggerEvent::Triggered, this, &APlayerBaseClass::PushToTalk);
 	EnhancedInputComponent->BindAction(M_PulseAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Pulse);
+	EnhancedInputComponent->BindAction(M_ScrollUp, ETriggerEvent::Triggered, this, &APlayerBaseClass::ScrollUp);
+	EnhancedInputComponent->BindAction(M_ScrollDown, ETriggerEvent::Triggered, this, &APlayerBaseClass::ScrollDown);
+	
 
 }
 

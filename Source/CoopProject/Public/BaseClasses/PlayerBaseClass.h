@@ -18,6 +18,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSpawnVFX);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FShowMic, bool, Show);
 
 UCLASS()
 class COOPPROJECT_API APlayerBaseClass : public ACharacter
@@ -66,6 +67,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Talk Action"))
     class UInputAction* M_PushToTalk;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "ScrollUp"))
+	class UInputAction* M_ScrollUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "ScrollDown"))
+	class UInputAction* M_ScrollDown;
+	
 
 	
 	
@@ -96,6 +103,10 @@ protected:
     
     	
 	void ObjectMove();
+
+	void ScrollUp();
+
+	void ScrollDown();
     
     	
 	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
@@ -114,6 +125,12 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPC_StartSprint();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPC_ScrollUp();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPC_ScrollDown();
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPC_EndSprint();
@@ -177,7 +194,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float M_GrabDistance = 300;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "HoldDistance"))
 	float M_HoldDistance = 200;
 
 	UPROPERTY(EditAnywhere)
@@ -213,6 +230,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "CanPulse"))
 	bool M_bCanPulse = true;
+
+	UPROPERTY(BlueprintAssignable, meta = (DisplayName = "ShowMicDelegate"))
+	FShowMic M_ShowMic;
 	
 	
 	// Called every frame
@@ -225,3 +245,6 @@ public:
 	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return M_Camera; }
 
 };
+
+
+
