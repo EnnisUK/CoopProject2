@@ -65,7 +65,10 @@ void ACodeMovableObject::OnRep_UpdateInputCode()
 void ACodeMovableObject::CorrectCode()
 {
 	M_ActivateActor.Broadcast();
+	MoveExtras();
 }
+
+
 
 void ACodeMovableObject::ResetLamps_Implementation()
 {
