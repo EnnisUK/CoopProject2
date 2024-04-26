@@ -67,6 +67,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Player Location"))
 	FVector M_PlayerLocation;
+
+	
 	
 	
 };

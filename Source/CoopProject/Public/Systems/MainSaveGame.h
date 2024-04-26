@@ -55,12 +55,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Mouse Sens"))
 	float M_MouseSens;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Inverted Y?"))
-	bool M_bUseInvertedMouseY;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Inverted X?"))
-	bool M_bUseInvertedMouseX;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Resolution"))
 	FIntPoint M_Resolution;
@@ -68,7 +62,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicDevice"))
 	FString M_SelctedMic;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "InvertedSens?"))
+	float M_InvertedSensX;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "InvertedSens?"))
+	float M_InvertedSensY;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicVolume"))
 	float M_MicVolume;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "AmountOfPlayers"))
+	int32 M_AmountOfPlayers;
 	
 };

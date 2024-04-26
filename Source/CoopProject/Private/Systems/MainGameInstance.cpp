@@ -42,6 +42,7 @@ void UMainGameInstance::SaveGame()
 		M_SaveGame->M_bShowFPS = M_bShowFPS;
 		M_SaveGame->M_ControllerSens = M_ControllerSens;
 		M_SaveGame->M_ColourBlindSens = M_ColourBlindSens;
+		
 		//M_SaveGame->M_ColourMode = M_ColourMode;
 		M_SaveGame->M_Gamma = M_Gamma;
 		if (Player)

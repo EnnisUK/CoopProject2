@@ -18,6 +18,8 @@ void UAFGI_MainInstance::Init()
 	M_UserSettings = UGameUserSettings::GetGameUserSettings();
 
 	SetDefaultSettings();
+
+	OnlineSubsystem = IOnlineSubsystem::Get();
 	
 }
 
@@ -46,11 +48,12 @@ void UAFGI_MainInstance::SaveGame()
 		M_SaveGame->M_FOV = M_FOV;
 		M_SaveGame->M_FPSIndex = M_FPSIndex;
 		M_SaveGame->M_MouseSens = M_MouseSens;
-		M_SaveGame->M_bUseInvertedMouseY = M_bUseInvertedMouseY;
-		M_SaveGame->M_bUseInvertedMouseX = M_bUseInvertedMouseX;
 		M_SaveGame->M_Resolution = M_Resolution;
 		M_SaveGame->M_SelctedMic = M_SelctedMic;
 		M_SaveGame->M_MicVolume = M_MicVolume;
+		M_SaveGame->M_InvertedSensX = M_InvertedSensX;
+		M_SaveGame->M_InvertedSensY = M_InvertedSensY;
+		M_SaveGame->M_AmountOfPlayers = M_AmountOfPlayers;
 		if (Player)
 		{
 			M_SaveGame->M_PlayerLocation = M_PlayerLocation;
@@ -94,11 +97,12 @@ void UAFGI_MainInstance::LoadGame()
 	M_FOV = M_SaveGame->M_FOV;
 	M_FPSIndex = M_SaveGame->M_FPSIndex;
 	M_MouseSens = M_SaveGame->M_MouseSens;
-	M_bUseInvertedMouseY = M_SaveGame->M_bUseInvertedMouseY;
-	M_bUseInvertedMouseX = M_SaveGame->M_bUseInvertedMouseX;
+	M_InvertedSensX = M_SaveGame->M_InvertedSensX;
+	M_InvertedSensY = M_SaveGame->M_InvertedSensY;
 	M_Resolution = M_SaveGame->M_Resolution;
 	M_SelctedMic = M_SaveGame->M_SelctedMic;
 	M_MicVolume = M_SaveGame->M_MicVolume;
+	M_AmountOfPlayers = M_SaveGame->M_AmountOfPlayers;
 	if (Player)
 	{
 		M_PlayerLocation = M_SaveGame->M_PlayerLocation;
@@ -344,6 +348,13 @@ void UAFGI_MainInstance::ChangeFPS(int NewIndex)
 	FString Msg = FString::Printf(TEXT("Current FPS is: %f"), M_FrameRate);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, Msg);
 }
+
+FString UAFGI_MainInstance::ReturnSubsystem()
+{
+	return OnlineSubsystem->GetSubsystemName().ToString();
+}
+
+
 
 
 

@@ -18,6 +18,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSpawnVFX);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FShowMic, bool, Show);
 
 UCLASS()
 class COOPPROJECT_API APlayerBaseClass : public ACharacter
@@ -66,6 +67,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "Talk Action"))
     class UInputAction* M_PushToTalk;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "ScrollUp"))
+	class UInputAction* M_ScrollUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"), meta = (DisplayName = "ScrollDown"))
+	class UInputAction* M_ScrollDown;
+	
 
 	
 	
@@ -96,13 +103,21 @@ protected:
     
     	
 	void ObjectMove();
+
+	void ScrollUp();
+
+	void ScrollDown();
     
     	
 	void PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation);
 
 	void Ping();
 
-	
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerRPC_Respawn();
+
+	UFUNCTION(BlueprintCallable)
+	void Respawn();
 	
 	
 	
@@ -110,6 +125,12 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPC_StartSprint();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPC_ScrollUp();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPC_ScrollDown();
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPC_EndSprint();
@@ -145,10 +166,12 @@ protected:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	
+public:	
 	
 	//Variables
 
+	FVector M_SpawnLocation;
+	
 	ACharacterController* M_CharacterController;
 
 	bool M_IsSpeaking = false;
@@ -171,7 +194,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float M_GrabDistance = 300;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "HoldDistance"))
 	float M_HoldDistance = 200;
 
 	UPROPERTY(EditAnywhere)
@@ -207,9 +230,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "CanPulse"))
 	bool M_bCanPulse = true;
-	
 
-public:	
+	UPROPERTY(BlueprintAssignable, meta = (DisplayName = "ShowMicDelegate"))
+	FShowMic M_ShowMic;
+	
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -220,3 +245,6 @@ public:
 	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return M_Camera; }
 
 };
+
+
+

@@ -86,6 +86,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FActivateActor M_ActivateActor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", DisplayName = "ExtraActors"))
+	TArray<AActor*> M_ExtraActors;
+
 	//Server Functions
 
 	UFUNCTION()
@@ -99,5 +102,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CorrectCode();
+
+
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void MoveExtras();
 };
 

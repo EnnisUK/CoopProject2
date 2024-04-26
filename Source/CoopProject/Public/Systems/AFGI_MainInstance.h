@@ -8,6 +8,7 @@
 #include "Rendering/RenderingCommon.h"
 #include "Systems/MainSaveGame.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Net/UnrealNetwork.h"
 #include "Rendering/RenderingCommon.h"
 
 #include "GenericPlatform/GenericWindow.h"
@@ -61,12 +62,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "UseVsync?"))
 	bool M_bUseVsync;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "InvertedY?"))
-    bool M_bUseInvertedMouseY;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "InvertedX?"))
-	bool M_bUseInvertedMouseX;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "InvertedSensX"))
+	float M_InvertedSensX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "InvertedSensY"))
+	float M_InvertedSensY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "ControllerSens"))
 	float M_ControllerSens;
@@ -159,8 +160,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "MicVolume"))
 	float M_MicVolume;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "AmountOfPlayers"))
+	int32 M_AmountOfPlayers;
+
 	UPROPERTY(BlueprintReadOnly)
 	FString M_Message;
+
+	bool M_OnSteam;
+
+	bool M_OnEpic;
+
+	const IOnlineSubsystem* OnlineSubsystem;
 	
 	
 	
@@ -181,6 +191,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void ChangeFPS(int NewIndex);
+
+	UFUNCTION(BlueprintCallable)
+	FString ReturnSubsystem();
 
 	
 	

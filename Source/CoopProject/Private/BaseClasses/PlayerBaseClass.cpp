@@ -40,8 +40,6 @@ APlayerBaseClass::APlayerBaseClass()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-
-	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	
 	M_PhysicsHandleComp = CreateDefaultSubobject<UPhysicsHandleComponent>("PhysicsHandleComponent");
@@ -70,18 +68,11 @@ void APlayerBaseClass::BeginPlay()
 
 	if (!HasAuthority())
 	{
-		
-	
 		M_Pawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-		if (M_Pawn)
-		{
-			Print("PawnValid");
-		}
-		else
-		{
-			Print("PawnNotValid");
-		}
-	}	
+	}
+
+	M_SpawnLocation = GetActorLocation();
+	
 }
 	
 
@@ -151,7 +142,7 @@ void APlayerBaseClass::Sprint()
 			GetCharacterMovement()->MaxWalkSpeed = 1200;
 		}
 		
-		GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red,TEXT("StartedSprint"));
+		
 	}
 	else
 	{
@@ -165,7 +156,7 @@ void APlayerBaseClass::Sprint()
 			ServerRPC_EndSprint();
 			GetCharacterMovement()->MaxWalkSpeed = 600;
 		}
-		GEngine->AddOnScreenDebugMessage(-1,2,FColor::Red,TEXT("EndedSprint"));
+		
 	}
 }
 
@@ -175,12 +166,12 @@ void APlayerBaseClass::Grab()
 	{
 		if (!M_bIsGrabbed)
 		{
-			Print(TEXT("Grabbed By Server"));
+			
 			GrabObject();
 		}
 		else
 		{
-			Print(TEXT("Dropped By Server"));
+			
 			DropObject();
 		}
 	}
@@ -188,12 +179,12 @@ void APlayerBaseClass::Grab()
 	{
 		if (!M_bIsGrabbed)
 		{
-			Print(TEXT("Grabbed By Client"));
+			
 			ServerRPC_GrabObject();
 		}
 		else
 		{
-			Print(TEXT("Dropped by Client"));
+			
 			ServerRPC_DropObject();
 		}
 	}
@@ -215,17 +206,20 @@ void APlayerBaseClass::PushToTalk()
 	{
 		M_IsSpeaking = true;
 		M_CharacterController->PushToTalk(true);
+		M_ShowMic.Broadcast(true);
 	}
 	else if (M_IsSpeaking && M_CharacterController)
 	{
 		M_IsSpeaking = false;
 		M_CharacterController->PushToTalk(false);
+		M_ShowMic.Broadcast(false);
 	}
 }
 
 
 void APlayerBaseClass::GrabObject()
 {
+	M_HoldDistance = 400;
 	FCollisionQueryParams QueryParams;
 	TArray<AActor*> ActorsToIgnore;
 	FVector Start = GetActorLocation();
@@ -262,6 +256,41 @@ void APlayerBaseClass::ObjectMove()
 	M_PhysicsHandleComp->SetTargetLocationAndRotation(TargetLocation, GetOwner()->GetActorRotation());	
 }
 
+void APlayerBaseClass::ScrollUp()
+{
+	if (M_bIsGrabbed)
+	{
+		if (HasAuthority())
+		{
+			M_HoldDistance += 20;
+			M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
+		}
+		else
+		{
+			ServerRPC_ScrollUp();
+		}
+		
+	}
+}
+
+void APlayerBaseClass::ScrollDown()
+{
+	if (M_bIsGrabbed)
+	{
+		if (HasAuthority())
+		{
+			M_HoldDistance -= 20;
+			M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
+		}
+		else
+		{
+			ServerRPC_ScrollDown();
+		}
+		
+	}
+	
+}
+
 void APlayerBaseClass::PickupObject(UPrimitiveComponent* HitComponent, FVector Location, FRotator Rotation)
 {
 	M_PhysicsHandleComp->GrabComponentAtLocationWithRotation(HitComponent, NAME_None, Location, Rotation);
@@ -277,7 +306,6 @@ void APlayerBaseClass::Ping()
 		FVector Start = this->GetCameraComponent()->GetComponentLocation();
 		FVector End = Start + GetCameraComponent()->GetForwardVector() * M_PingDistance;
 		AActor* CamOwner = GetCameraComponent()->GetOwner();
-		GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Orange,UKismetSystemLibrary::GetDisplayName(CamOwner));
 		if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 		{
 			M_Params.Owner = this;
@@ -303,6 +331,28 @@ void APlayerBaseClass::Ping()
 	}
 }
 
+void APlayerBaseClass::Respawn()
+{
+	SetActorLocation(M_SpawnLocation);
+}
+
+void APlayerBaseClass::ServerRPC_ScrollUp_Implementation()
+{
+	M_HoldDistance += 20;
+	M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
+}
+
+void APlayerBaseClass::ServerRPC_ScrollDown_Implementation()
+{
+	M_HoldDistance -= 20;
+	M_HoldDistance = FMath::Clamp(M_HoldDistance, 100, 500);
+}
+
+void APlayerBaseClass::ServerRPC_Respawn_Implementation()
+{
+	SetActorLocation(M_SpawnLocation);
+}
+
 
 
 void APlayerBaseClass::ServerRPC_Ping_Implementation()
@@ -311,7 +361,6 @@ void APlayerBaseClass::ServerRPC_Ping_Implementation()
 	FVector Start = this->GetCameraComponent()->GetComponentLocation();
 	FVector End =  Start + GetCameraComponent()->GetForwardVector() * M_PingDistance;
 	AActor* CamOwner = GetCameraComponent()->GetOwner();
-	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Orange,UKismetSystemLibrary::GetDisplayName(CamOwner));
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility))
 	{
 		GetWorld()->SpawnActor<AActor>(M_PingActor, Hit.Location, FRotator::ZeroRotator, M_Params);
@@ -468,6 +517,9 @@ void APlayerBaseClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(M_PingAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Ping);
 	EnhancedInputComponent->BindAction(M_PushToTalk, ETriggerEvent::Triggered, this, &APlayerBaseClass::PushToTalk);
 	EnhancedInputComponent->BindAction(M_PulseAction, ETriggerEvent::Triggered, this, &APlayerBaseClass::Pulse);
+	EnhancedInputComponent->BindAction(M_ScrollUp, ETriggerEvent::Triggered, this, &APlayerBaseClass::ScrollUp);
+	EnhancedInputComponent->BindAction(M_ScrollDown, ETriggerEvent::Triggered, this, &APlayerBaseClass::ScrollDown);
+	
 
 }
 

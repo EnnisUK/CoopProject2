@@ -37,8 +37,7 @@ void ACharacterController::PushToTalk(bool TurnOnMic)
 	if (TurnOnMic)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Mic On, called from CharacterCon"));
-		TArray<int32> RadioIndex;
-		UUniversalVoiceChat::VoiceChatStartSpeak(true, true, RadioIndex, false, 0);
+		UUniversalVoiceChat::VoiceChatStartSpeak(false, true, 0, false);
 	}
 	else
 	{

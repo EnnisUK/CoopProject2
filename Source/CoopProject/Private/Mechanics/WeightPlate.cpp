@@ -105,10 +105,14 @@ void AWeightPlate::Tick(float DeltaTime)
 			if (bTrigger)
 			{
 				bTrigger = false;
-				M_ActorToTrigger->M_CurrentWeight -= M_WeightedActor->M_Weight;
-				M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
-				M_ActorToTrigger->M_ResetActor.Broadcast();
-				M_OnDeactivated.Broadcast();
+				if (M_ActorToTrigger)
+				{
+					M_ActorToTrigger->M_CurrentWeight -= M_WeightedActor->M_Weight;
+					M_ActorToTrigger->M_CurrentWeight = UKismetMathLibrary::ClampInt64(M_ActorToTrigger->M_CurrentWeight, 0, 5000);
+					M_ActorToTrigger->M_ResetActor.Broadcast();
+					M_OnDeactivated.Broadcast();
+				}
+				
 			}
 		}
 		
